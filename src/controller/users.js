@@ -3,24 +3,30 @@
 const dbPool = require("../config/mysql");
 
 // CREATE a new user
-const createUser = (req, res) => {
-  // Get the user data from the request body
-  const userData = req.body;
+const createUser = async (req, res) => {
+    // console.log(req.body)
+    const { body } = req
 
-  // Define the SQL query
-  const sql = "INSERT INTO users SET ?";
-
-  // Execute the query with the user data as a parameter
-  dbPool.query(sql, userData, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Error creating user");
-    } else {
-      console.log("User created successfully");
-      res.send(`User with ID: ${result.insertId} created successfully`);
+    if (!body.full_name || !body.email) {
+        return res.status(400).json({
+            message: 'Invalid input value',
+            data: null
+        })
     }
-  });
-};
+
+    try {
+        await UsersModel.createNewUser(body)
+        return res.status(201).json({
+            message: 'CREATE new user success', 
+            data: body
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+    }
+}
 
 // READ all users
 const getAllUsers = (req, res) => {
