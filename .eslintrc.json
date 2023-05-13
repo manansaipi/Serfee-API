@@ -11,15 +11,11 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "indent": [
+        "quotes": [
             "error",
-            4 // ->space 4
+            "double"
         ],
         "linebreak-style": 0, //->0
-        "semi": [ // no semicolon
-            "error",
-            "never"
-        ],
         "no-trailing-spaces": "off",//->on/off
         "no-console": "off", //->off
         "comma-dangle": "off", //->off

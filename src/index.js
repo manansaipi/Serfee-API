@@ -10,7 +10,7 @@ app.use(express.json()); // this middle ware allow JSON req.body
 
 app.use("/users", usersRoutes); // Grouping path users in users.js file
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // err handling
   res.json({
     message: err.message,
