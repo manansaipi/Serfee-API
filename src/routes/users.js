@@ -1,9 +1,29 @@
-const express = require('express')
-const usersController = require('../controller/users')
+// Import dependencies
+const express = require('express');
+const router = express.Router();
 
-const router = express.Router()
+// Import controller functions
+const {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUserById,
+  deleteUserById
+} = require('../controller/users');
 
 // CREATE user - POST
-router.post('/', usersController.createUser) // path "/" will refer to /users because grouping in index.js file so no need to write'/users'
+router.post('/', createUser);
 
-module.exports = router
+// READ all users - GET
+router.get('/', getAllUsers);
+
+// READ user by ID - GET
+router.get('/:id', getUserById);
+
+// UPDATE user by ID - PUT
+router.put('/:id', updateUserById);
+
+// DELETE user by ID - DELETE
+router.delete('/:id', deleteUserById);
+
+module.exports = router;
