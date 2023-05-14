@@ -11,6 +11,10 @@
         "ecmaVersion": "latest"
     },
     "rules": {
+        "indent": [
+            "error",
+            4//->default 2
+        ],
         "quotes": [
             "error",
             "double"
@@ -19,6 +23,8 @@
         "no-trailing-spaces": "off",//->on/off
         "no-console": "off", //->off
         "comma-dangle": "off", //->off
-        "eol-last": 0 //->0
+        "eol-last": 0, //->0
+        "prefer-destructuring": "off",
+        "import/no-unresolved": "off"
     }
 }
