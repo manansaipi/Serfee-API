@@ -1,5 +1,4 @@
 // Import dependencies
-const dbPool = require("../config/mysql"); // Import the database connection pool
 const UsersModel = require("../models/users");
 
 // CREATE a new user
@@ -28,89 +27,90 @@ const createUser = async (req, res) => {
     }
 };
 
-// READ all users
-const getAllUsers = (req, res) => {
-    // Define the SQL query
-    const sql = "SELECT * FROM users";
-
-    // Execute the query
-    dbPool.query(sql, (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send("Error retrieving users");
-        } else {
-            res.send(results);
-        }
-    });
-};
-
+const getAllUsers = async (req, res) => {
+    try {
+        const [data] = await UsersModel.getAllUsers()
+        res.json({
+            message: 'GET all users',
+            data
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+    }
+}
 // READ a user by ID
-const getUserById = (req, res) => {
+const getUserById = async (req, res) => {
     // Get the user ID from the request parameters
-    const userId = req.params.id;
-
-    // Define the SQL query
-    const sql = "SELECT * FROM users WHERE id = ?";
-
-    // Execute the query with the user ID as a parameter
-    dbPool.query(sql, userId, (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send("Error retrieving user");
-        } else if (results.length === 0) {
-            res.status(404).send("User not found");
-        } else {
-            res.send(results[0]);
-        }
-    });
+    const id = req.params.id;
+    console.log('id: ', id) 
+    // console.log(req.params) params -> parameter
+    try {
+        const [data] = await UsersModel.getUser(id)
+        res.json({
+            message: 'Get user success',
+            data
+        }) 
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+    }
 };
 
-// UPDATE a user by ID
-const updateUserById = (req, res) => {
-    // Get the user ID from the request parameters
-    const userId = req.params.id;
+const updateUserById = async (req, res) => {
+    const { id } = req.params.id
+    const { body } = req
+    console.log('id: ', id) 
+    // console.log(req.params) params -> parameter
+    try {
+        await UsersModel.updateUser(body, id)
+        res.json({
+            message: 'UPDATE user success',
+            data: {
+                id,
+                ...body
+            }
+        }) 
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+    }
+}
 
-    // Get the updated user data from the request body
-    const updatedUserData = req.body;
-
-    // Define the SQL query
-    const sql = "UPDATE users SET ? WHERE id = ?";
-
-    // Execute the query with the updated user data and user ID as parameters
-    dbPool.query(sql, [updatedUserData, userId], (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send("Error updating user");
-        } else if (result.affectedRows === 0) {
-            res.status(404).send("User not found");
+const deleteUserById = async (req, res) => {
+    const { id } = req.params
+    const { body } = req
+    console.log('id: ', id)
+    try {
+        const [data] = await UsersModel.getUser(id)
+        console.log(data)
+        if (data === '') {
+            res.status(404).json({
+                message: 'id not found'
+            })
         } else {
-            console.log("User updated successfully");
-            res.send("User updated successfully");
+            await UsersModel.deleteUser(id)
+            res.json({
+                message: 'DELETE user success',
+                data: {
+                    id,
+                    body
+                }
+            })
         }
-    });
-};
-
-// DELETE user by ID
-const deleteUserById = (req, res) => {
-    // Get the user ID from the request parameters
-    const userId = req.params.id;
-
-    // Define the SQL query
-    const sql = "DELETE FROM users WHERE id = ?";
-
-    // Execute the query with the user ID as a parameter
-    dbPool.query(sql, userId, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send("Error deleting user");
-        } else if (result.affectedRows === 0) {
-            res.status(404).send("User not found");
-        } else {
-            console.log("User deleted successfully");
-            res.send("User deleted successfully");
-        }
-    });
-};
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })    
+    }
+}
 
 module.exports = {
     createUser,
