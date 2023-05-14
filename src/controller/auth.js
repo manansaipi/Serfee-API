@@ -1,4 +1,5 @@
 const config = require("../config/firebase"); // Import firebase configuration
+const UsersModel = require("../models/users");
 
 const login = async (req, res) => {
     const { body } = req;
@@ -38,10 +39,16 @@ const register = async (req, res) => {
             email,
             password,
         });
-        res.json({ 
-            message: "success regist",
-            user: userRecord.toJSON()
-        });
+        if(email){
+            const email = userRecord.email;
+            console.log(email)
+            const fName = email.split("@")[0];
+            await UsersModel.createNewUserWhenRegister(fName, email),
+            res.json({ 
+                message: "success regist",
+                // user: userRecord.toJSON()
+            });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({
