@@ -5,11 +5,11 @@ const router = express.Router();
 
 // Import controller functions
 const {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUserById,
-  deleteUserById
+    createUser,
+    getAllUsers,
+    getUserById,
+    updateUserById,
+    deleteUserById
 } = require("../controller/users");
 
 // CREATE user - POST
