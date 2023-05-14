@@ -27,7 +27,7 @@ const deleteUser = (id) => {
 const createNewUserWhenRegister = (fName, email) => {
     const SQLQuery = `INSERT INTO users (full_name, email) VALUES ('${fName}', '${email}')`;
     return dbPool.execute(SQLQuery);
-}
+};
 
 module.exports = {
     getAllUsers,
