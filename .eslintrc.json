@@ -24,7 +24,8 @@
         "no-console": "off", //->off
         "comma-dangle": "off", //->off
         "eol-last": 0, //->0
-        "prefer-destructuring": "off"
+        "prefer-destructuring": "off",
+        "import/no-unresolved": "off"
     }
     
 }
