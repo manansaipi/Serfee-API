@@ -27,5 +27,4 @@
         "prefer-destructuring": "off",
         "import/no-unresolved": "off"
     }
-    
 }
