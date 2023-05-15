@@ -4,7 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
-// const middleware = require("./middleware/firebase_auth");
+// const Middleware = require("./middleware/firebase_auth");
 
 const app = express();
 
