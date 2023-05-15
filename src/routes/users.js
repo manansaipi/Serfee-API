@@ -1,7 +1,6 @@
 // Import dependencies
 const express = require("express");
-
-const router = express.Router();
+const Middleware = require("../middleware/firebase_auth");
 
 // Import controller functions
 const {
@@ -12,6 +11,8 @@ const {
     deleteUserById
 } = require("../controller/users");
 
+const router = express.Router();
+
 // CREATE user - POST
 router.post("/", createUser);
 
@@ -21,8 +22,8 @@ router.get("/", getAllUsers);
 // READ user by ID - GET
 router.get("/:id", getUserById);
 
-// UPDATE user by ID - PUT
-router.put("/:id", updateUserById);
+// UPDATE user by firebase_uid
+router.patch("/", Middleware.authMiddleware, updateUserById);
 
 // DELETE user by ID - DELETE
 router.delete("/:id", deleteUserById);

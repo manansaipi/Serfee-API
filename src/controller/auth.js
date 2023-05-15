@@ -39,8 +39,9 @@ const register = async (req, res) => {
             email,
             password,
         });
+        const firebase_uid = userRecord.uid; // take firebase_uid to store into mysql
         if (email) {
-            await UsersModel.createNewUserWhenRegister(fName, email);
+            await UsersModel.createNewUserWhenRegister(firebase_uid, fName, email);
             res.json({ 
                 message: "success regist",
                 user: userRecord.toJSON()
