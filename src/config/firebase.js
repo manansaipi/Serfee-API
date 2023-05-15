@@ -6,12 +6,12 @@ const serviceAccount = require("../../credentials/firebase.json"); // credential
 
 admin.initializeApp({ // init
     credential: admin.credential.cert(serviceAccount), // credentials
-    databaseURL: "https://qwiklabs-gcp-01-11295665b6ce-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    databaseURL: "https://qwiklabs-gcp-00-3c438bbc0fe5-default-rtdb.firebaseio.com/"
 });
 firebase.initializeApp({
-    apiKey: "AIzaSyCQ1BER9gwfnFCv5KZpDP7mRfzpgt35fII",
-    authDomain: "https://accounts.google.com/o/oauth2/auth",
-    projectId: "qwiklabs-gcp-01-11295665b6ce",
+    apiKey: "AIzaSyA4hVS1r8UqerWp-Q2Jqy3O-Iooq3IQ59s",
+    authDomain: "https://oauth2.googleapis.com/token",
+    projectId: "qwiklabs-gcp-00-3c438bbc0fe5",
 });
 
 module.exports = {
