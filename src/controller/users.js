@@ -164,8 +164,6 @@ const uploadUserPhoto = async (req, res) => {
             data: req.file,
             url: publicUrl
         });
-        // update user data data in firebase
-        
     } catch (error) {
         res.json({
             message: error
