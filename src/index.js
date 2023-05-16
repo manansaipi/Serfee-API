@@ -4,7 +4,8 @@ require("dotenv").config();
 const express = require("express");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
-// const Middleware = require("./middleware/firebase_auth");
+
+const requestRoutes = require("./routes/routeRequestTask");
 
 const app = express();
 
@@ -14,8 +15,7 @@ app.use("/users", usersRoutes); // Grouping path users in users. jsfile
 
 app.use("/auth", firebaseAuth);
 
-// have to validate user before use the searchFeature using authMiddleware
-// app.use("/search", middleware.authMiddleware, searchRoute); // search feature
+app.use("/task-requests", requestRoutes);
 
 app.use((err, req, res) => {
     // err handling
