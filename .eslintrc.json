@@ -25,6 +25,7 @@
         "comma-dangle": "off", //->off
         "eol-last": 0, //->0
         "prefer-destructuring": "off",
-        "import/no-unresolved": "off"
+        "import/no-unresolved": "off",
+        "camelcase": "off"
     }
 }
