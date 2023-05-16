@@ -15,7 +15,7 @@ app.use("/users", usersRoutes); // Grouping path users in users.js file
 app.use("/auth", firebaseAuth);
 
 app.use("/task-requests", requestRoutes);
-app.use((err, req, res) => {
+app.use((err, req, res,next) => {
     // err handling
     res.json({
         message: err,
