@@ -1,6 +1,9 @@
 // Import dependencies
+const fs = require("fs");
+
 const UsersModel = require("../models/users");
-const config = require("../config/firebase");
+const firebaseConfig = require("../config/firebase");
+const cloudStorageConfig = require("../config/cloud-storage");
 // CREATE a new user
 const createUser = async (req, res) => {
     // console.log(req.body)
@@ -69,7 +72,7 @@ const updateUserById = async (req, res) => {
         await UsersModel.updateUser(firebase_uid, body.displayName);
 
         // update user data data in firebase
-        await config.admin.auth().updateUser(firebase_uid, body);
+        await firebaseConfig.admin.auth().updateUser(firebase_uid, body);
         res.json({
             message: "UPDATE user success",
             data: {
@@ -114,10 +117,67 @@ const deleteUserById = async (req, res) => {
     }
 };
 
+// This function will upload user photo to Cloud Storage
+const uploadUserPhoto = async (req, res) => {
+    const firebase_uid = req.user.uid; // get firebase_uid from authMiddleware using authorization access token 
+    const file = req.file; // get file in body->form-data
+    const destination = cloudStorageConfig.bucket.file(`images/profile/${file.filename}`); // path to save in the bucket and the file name
+    const filePath = `./public/images/${file.filename}`; // path to acces images
+
+    // Get the public URL
+    const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/images/profile/${file.filename}`; 
+    // need to store this URL to the firebase to access user photo
+    
+    try {
+        const options = {
+            metadata: {
+                contentType: file.mimetype,
+            },
+            predefinedAcl: "publicRead", // set public access control in Cloud SQL
+        };
+        // store photo to Cloud SQL
+        await new Promise((resolve, reject) => {
+            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
+            const writeStream = destination.createWriteStream(options);
+
+            readStream.on("error", reject);
+            writeStream.on("error", reject);
+            writeStream.on("finish", resolve);
+
+            readStream.pipe(writeStream);
+        });
+        // do delete file  in public/images directory after upload to Cloud SQL
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Failed to delete file: ${err}`);
+            }
+        });
+        // get photo url in hte Cloud SQL to store in firebase
+        const photoUrl = {
+            photoUrl: publicUrl
+        };
+        // update user photoURL in firebase by firebase_uid
+        await firebaseConfig.admin.auth().updateUser(firebase_uid, photoUrl);
+        res.json({
+            message: "Upload success",
+            firebase_uid,
+            data: req.file,
+            url: publicUrl
+        });
+        // update user data data in firebase
+        
+    } catch (error) {
+        res.json({
+            message: error
+        });
+    }
+};
+
 module.exports = {
     createUser,
     getAllUsers,
     getUserById,
     updateUserById,
     deleteUserById,
+    uploadUserPhoto
 };

@@ -1,4 +1,4 @@
-const config = require("../config/firebase"); // Import firebase configuration
+const firebaseConfig = require("../config/firebase"); // Import firebase configuration
 const UsersModel = require("../models/users");
 
 const login = async (req, res) => {
@@ -13,7 +13,7 @@ const login = async (req, res) => {
 
     try {
         // firebase auth using firebase core modules
-        const userRecord = await config.firebase.auth().signInWithEmailAndPassword(email, password);
+        const userRecord = await firebaseConfig.firebase.auth().signInWithEmailAndPassword(email, password);
         res.json({
             message: "success login",
             userRecord
@@ -35,7 +35,7 @@ const register = async (req, res) => {
 
     try {
         // Create user account in Firebase Authentication using firebase-admin
-        const userRecord = await config.admin.auth().createUser({
+        const userRecord = await firebaseConfig.admin.auth().createUser({
             email,
             password,
         });

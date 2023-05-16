@@ -8,8 +8,10 @@ const {
     getAllUsers,
     getUserById,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    uploadUserPhoto
 } = require("../controller/users");
+const upload = require("../middleware/multer");
 
 const router = express.Router();
 
@@ -27,5 +29,8 @@ router.patch("/", Middleware.authMiddleware, updateUserById);
 
 // DELETE user by ID - DELETE
 router.delete("/:id", deleteUserById);
+
+// UPLOAD user photo to Cloud SQL and update user photoURL in firebase
+router.post("/uploadPhoto", Middleware.authMiddleware, upload.single("photo"), uploadUserPhoto);
 
 module.exports = router;

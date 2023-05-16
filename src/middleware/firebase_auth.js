@@ -1,5 +1,10 @@
 const config = require("../config/firebase");
 
+/*  This middleware is to take the user data from
+    firebase by access token given in headers with
+    key = 'authorization' and the value = accessToken 
+    and store it in req.user so we can use the req.user in controller
+*/
 const authMiddleware = async (req, res, next) => {
     const idToken = req.headers.authorization; // get access token
     try {
