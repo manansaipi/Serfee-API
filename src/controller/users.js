@@ -1,6 +1,6 @@
 // Import dependencies
 const UsersModel = require("../models/users");
-
+const config = require("../config/firebase");
 // CREATE a new user
 const createUser = async (req, res) => {
     // console.log(req.body)
@@ -61,15 +61,19 @@ const getUserById = async (req, res) => {
 };
 
 const updateUserById = async (req, res) => {
-    const { id } = req.params.id;
-    const { body } = req;
-    console.log("id: ", id);
+    // Get firebase_uid asign from authMiddleware using authorization access token 
+    const firebase_uid = req.user.uid; 
+    const { body } = req; // get data from body in JSON
     try {
-        await UsersModel.updateUser(body, id); // excecute query
+        // excecute query to update full_name in mysql
+        await UsersModel.updateUser(firebase_uid, body.displayName);
+
+        // update user data data in firebase
+        await config.admin.auth().updateUser(firebase_uid, body);
         res.json({
             message: "UPDATE user success",
             data: {
-                id,
+                firebase_uid,
                 ...body
             }
         });

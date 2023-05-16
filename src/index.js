@@ -4,18 +4,19 @@ require("dotenv").config();
 const express = require("express");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
+
 const requestRoutes = require("./routes/routeRequestTask");
 
 const app = express();
 
 app.use(express.json()); // this middle ware allow JSON req.body
 
-app.use("/users", usersRoutes); // Grouping path users in users.js file
+app.use("/users", usersRoutes); // Grouping path users in users. jsfile
 
 app.use("/auth", firebaseAuth);
 
 app.use("/task-requests", requestRoutes);
-app.use((err, req, res,next) => {
+app.use((err, req, res) => {
     // err handling
     res.json({
         message: err,
