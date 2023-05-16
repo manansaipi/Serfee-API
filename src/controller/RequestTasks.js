@@ -6,7 +6,7 @@ const TaskRequestModel = require("../models/RequestTaskModel");
 const createTask = async (req, res) => {
     const { body } = req;
 
-    if (!body.task_name || !body.description || !body.customer_id) {
+    if (!body.taskName || !body.description || !body.customerId) {
         return res.status(400).json({
             message: "Invalid input value",
             data: null,
