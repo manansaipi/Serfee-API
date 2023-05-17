@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "fix" : "eslint --fix src"
   },
   "author": "",
   "license": "ISC",
@@ -17,10 +18,12 @@
     "nodemon": "^2.0.22"
   },
   "dependencies": {
+    "@google-cloud/storage": "^6.9.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase": "^8.10.1",
     "firebase-admin": "^11.8.0",
+    "multer": "^1.4.5-lts.1",
     "mysql2": "^3.3.1"
   }
 }

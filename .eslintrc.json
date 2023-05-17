@@ -19,12 +19,19 @@
             "error",
             "double"
         ],
+        "max-len": [ 
+            "error",
+            {
+                "code": 300
+            }
+        ],
         "linebreak-style": 0, //->0
         "no-trailing-spaces": "off",//->on/off
         "no-console": "off", //->off
         "comma-dangle": "off", //->off
         "eol-last": 0, //->0
         "prefer-destructuring": "off",
-        "import/no-unresolved": "off"
+        "import/no-unresolved": "off",
+        "camelcase": "off"
     }
 }
