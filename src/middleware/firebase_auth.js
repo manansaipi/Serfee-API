@@ -5,7 +5,7 @@ const config = require("../config/firebase");
     key = 'authorization' and the value = accessToken 
     and store it in req.user so we can use the req.user in controller
 */
-const authMiddleware = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
     const idToken = req.headers.authorization; // get access token
     try {
         const decodeToken = await config.admin.auth().verifyIdToken(idToken);
@@ -20,5 +20,5 @@ const authMiddleware = async (req, res, next) => {
 };
 
 module.exports = {
-    authMiddleware
+    authenticate
 };

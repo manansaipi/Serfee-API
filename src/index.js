@@ -25,6 +25,11 @@ app.use("/auth", firebaseAuth);
 
 app.use("/task-requests", requestRoutes);
 
+app.use("/test", (req, res) => {
+    // else
+    res.send("hey");
+});
+
 app.use((err, req, res, next) => {
     // err handling
     res.send(err);

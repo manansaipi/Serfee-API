@@ -20,13 +20,13 @@ const updateUser = (firebase_uid, displayName) => {
     return dbPool.execute(SQLQuery);
 };
 
-const deleteUser = (id) => {
-    const SQLQuery = `DELETE FROM users WHERE id = '${id}'`;
+const deleteUser = (firebase_uid) => {
+    const SQLQuery = `DELETE FROM users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
-const createNewUserWhenRegister = (firebase_uid, fName, email) => {
-    const SQLQuery = `INSERT INTO users (firebase_uid, full_name, email) VALUES ('${firebase_uid}', '${fName}', '${email}')`;
+const createNewUserWhenRegister = (firebase_uid, userName, email) => {
+    const SQLQuery = `INSERT INTO users (firebase_uid, user_name, email) VALUES ('${firebase_uid}', '${userName}', '${email}')`;
     return dbPool.execute(SQLQuery);
 };
 

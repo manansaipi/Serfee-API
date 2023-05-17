@@ -1,6 +1,9 @@
 // Import dependencies
 const express = require("express");
+
+// Middleware
 const Middleware = require("../middleware/firebase_auth");
+const upload = require("../middleware/multer");
 
 // Import controller functions
 const {
@@ -11,7 +14,6 @@ const {
     deleteUserById,
     uploadUserPhoto
 } = require("../controller/users");
-const upload = require("../middleware/multer");
 
 const router = express.Router();
 
@@ -25,12 +27,12 @@ router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 
 // UPDATE user by firebase_uid
-router.patch("/", Middleware.authMiddleware, updateUserById);
+router.patch("/", Middleware.authenticate, updateUserById);
 
 // DELETE user by ID - DELETE
 router.delete("/:id", deleteUserById);
 
 // UPLOAD user photo to Cloud SQL and update user photoURL in firebase
-router.post("/uploadPhoto", Middleware.authMiddleware, upload.single("photo"), uploadUserPhoto);
+router.post("/uploadPhoto", Middleware.authenticate, upload.single("photo"), uploadUserPhoto);
 
 module.exports = router;
