@@ -1,11 +1,16 @@
 // Import dependencies
 const TaskModel = require("../models/RequestTaskModel");
 const TaskRequestModel = require("../models/RequestTaskModel");
+const UsersModel = require("../models/users");
 
 // CREATE a new task
 const createTask = async (req, res) => {
+    // take firebase_uid to find user information in db sql 
+    const firebase_uid = req.user.uid; 
+    // get user_id in db sql
+    const user_id = await UsersModel.getUser_id(firebase_uid);
     const { body } = req;
-
+  
     if (!body.taskName || !body.description || !body.customerId) {
         return res.status(400).json({
             message: "Invalid input value",
@@ -14,7 +19,7 @@ const createTask = async (req, res) => {
     }
 
     try {
-        const task = await TaskModel.createTask(body);
+        const task = await TaskModel.createTask(user_id, body);
         return res.status(201).json({
             message: "Create new task success",
             data: task,

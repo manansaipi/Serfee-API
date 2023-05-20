@@ -4,31 +4,7 @@ const fs = require("fs");
 const UsersModel = require("../models/users");
 const firebaseConfig = require("../config/firebase");
 const cloudStorageConfig = require("../config/cloud-storage");
-// CREATE a new user
-const createUser = async (req, res) => {
-    // console.log(req.body)
-    const { body } = req;
 
-    if (!body.full_name || !body.email) {
-        return res.status(400).json({
-            message: "Invalid input value",
-            data: null
-        });
-    }
-
-    try {
-        await UsersModel.createNewUser(body); // excecute query
-        return res.status(201).json({
-            message: "CREATE new user success", 
-            data: body
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            erverMessage: error,
-        });
-    }
-};
 
 const getAllUsers = async (req, res) => {
     try {
