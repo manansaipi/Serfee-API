@@ -33,7 +33,6 @@ const getUser_id = (firebase_uid) => {
 module.exports = {
     getAllUsers,
     getUser,
-    createNewUser,
     updateUser,
     deleteUser,
     createNewUserWhenRegister,

@@ -5,7 +5,6 @@ const UsersModel = require("../models/users");
 const firebaseConfig = require("../config/firebase");
 const cloudStorageConfig = require("../config/cloud-storage");
 
-
 const getAllUsers = async (req, res) => {
     try {
         const [data] = await UsersModel.getAllUsers(); // excecute query
@@ -148,7 +147,6 @@ const uploadUserPhoto = async (req, res) => {
 };
 
 module.exports = {
-    createUser,
     getAllUsers,
     getUserById,
     updateUserById,
