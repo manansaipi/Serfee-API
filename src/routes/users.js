@@ -17,9 +17,6 @@ const {
 
 const router = express.Router();
 
-// CREATE user - POST
-router.post("/", createUser);
-
 // READ all users - GET
 router.get("/", getAllUsers);
 
