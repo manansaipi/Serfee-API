@@ -56,7 +56,10 @@ const deleteTaskRequestById = (requestId) => {
     const SQLQuery = `DELETE FROM task_requests WHERE request_id = '${requestId}'`;
     return dbPool.execute(SQLQuery);
 };
-
+const serchTasks = (keyword) => {
+    const SQLQuery = `SELECT * FROM tasks WHERE taskName LIKE '%${keyword}' OR description LIKE '${keyword}'`;
+    return dbPool.execute(SQLQuery);
+};
 module.exports = {
     getAllTasks,
     getTaskById,
@@ -68,4 +71,5 @@ module.exports = {
     createTaskRequest,
     updateTaskRequestStatus,
     deleteTaskRequestById,
+    serchTasks,
 };
