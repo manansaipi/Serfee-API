@@ -2,7 +2,6 @@
 const TaskModel = require("../models/RequestTaskModel");
 const TaskRequestModel = require("../models/RequestTaskModel");
 
-// CREATE a new task
 const createTask = async (req, res) => {
     const { body } = req;
 
@@ -27,7 +26,6 @@ const createTask = async (req, res) => {
     }
 };
 
-// GET all tasks
 const getAllTasks = async (req, res) => {
     try {
         const tasks = await TaskModel.getAllTasks();
@@ -43,7 +41,6 @@ const getAllTasks = async (req, res) => {
     }
 };
 
-// GET a task by ID
 const getTaskById = async (req, res) => {
     const taskId = req.params.id;
     try {
@@ -66,7 +63,6 @@ const getTaskById = async (req, res) => {
     }
 };
 
-// UPDATE a task by ID
 const updateTaskById = async (req, res) => {
     const taskId = req.params.id;
     const { body } = req;
@@ -90,7 +86,6 @@ const updateTaskById = async (req, res) => {
     }
 };
 
-// DELETE a task by ID
 const deleteTaskById = async (req, res) => {
     const taskId = req.params.id;
     try {
@@ -113,7 +108,6 @@ const deleteTaskById = async (req, res) => {
     }
 };
 
-// CREATE a task request
 const createTaskRequest = async (req, res) => {
     const { body } = req;
 
@@ -138,7 +132,6 @@ const createTaskRequest = async (req, res) => {
     }
 };
 
-// GET all task requests
 const getAllTaskRequests = async (req, res) => {
     try {
         const requests = await TaskRequestModel.getAllTaskRequests();
@@ -154,7 +147,6 @@ const getAllTaskRequests = async (req, res) => {
     }
 };
 
-// GET task requests by task ID
 const getTaskRequestsByTaskId = async (req, res) => {
     const taskId = req.params.task_id;
     try {
@@ -171,7 +163,6 @@ const getTaskRequestsByTaskId = async (req, res) => {
     }
 };
 
-// UPDATE task request status
 const updateTaskRequestStatus = async (req, res) => {
     const requestId = req.params.id;
     const { body } = req;
@@ -198,7 +189,6 @@ const updateTaskRequestStatus = async (req, res) => {
     }
 };
 
-// DELETE a task request
 const deleteTaskRequestById = async (req, res) => {
     const requestId = req.params.id;
     try {
@@ -223,6 +213,23 @@ const deleteTaskRequestById = async (req, res) => {
     }
 };
 
+const seacrhTasks = async (req, res) => {
+    const { keyword } = req.query;
+
+    try {
+        const tasks = await TaskModel.serchTasks(keyword);
+        return res.json({
+            message: "Search tasks success",
+            data: tasks,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+
 module.exports = {
     createTask,
     getAllTasks,
@@ -234,4 +241,5 @@ module.exports = {
     getTaskRequestsByTaskId,
     updateTaskRequestStatus,
     deleteTaskRequestById,
+    seacrhTasks,
 };
