@@ -22,7 +22,6 @@ router.get("/task-requests/task/:task_id", controller.getTaskRequestsByTaskId);
 router.put("/task-requests/:id", controller.updateTaskRequestStatus);
 router.delete("/task-requests/:id", controller.deleteTaskRequestById);
 
-
 // search task
 router.get("/tasks/search", controller.seacrhTasks);
 
