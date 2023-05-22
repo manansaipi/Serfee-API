@@ -7,7 +7,6 @@ const upload = require("../middleware/multer");
 
 // Import controller functions
 const {
-    createUser,
     getAllUsers,
     getUserById,
     updateUserById,

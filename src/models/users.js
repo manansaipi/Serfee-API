@@ -10,8 +10,8 @@ const getUser = (id) => {
     return dbPool.execute(SQLQuery);
 };
 
-const updateUser = (firebase_uid, displayName) => {
-    const SQLQuery = `UPDATE users SET full_name = '${displayName}' WHERE firebase_uid = '${firebase_uid}'`;
+const updateUser = (firebase_uid, body) => {
+    const SQLQuery = `UPDATE users SET full_name = '${body.displayName}', user_name = '${body.username}', email = '${body.email}' WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -26,7 +26,7 @@ const createNewUserWhenRegister = (firebase_uid, name, email) => {
 };
 
 const getUser_id = (firebase_uid) => {
-    const SQLQuery = `SELECT user_id FROM users WHERE firebase_id = '${firebase_uid}'`;
+    const SQLQuery = `SELECT user_id FROM users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 

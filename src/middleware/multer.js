@@ -6,9 +6,8 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const timestamp = new Date().getTime(); // get time stamp
-        const userEmail = req.user.email;
-
-        cb(null, `${timestamp}-${userEmail}`); // save filename with this format
+        const { originalname } = file; // get filename
+        cb(null, `${timestamp}-${originalname}`); // save filename with this format
     }
 });
 

@@ -10,13 +10,13 @@ const getTaskById = (taskId) => {
     return dbPool.execute(SQLQuery);
 };
 
-const createTask = (body) => {
+const createTask = (user_id, body, image_url) => {
     const {
-        user_id, service_id, description, latitude, longitude, image_url
+        service_id, description, latitude, longtitude
     } = body;
-    const SQLQuery = `INSERT INTO tasks ( user_id, service_id, description, latitude, longitude, image_url) VALUES ('${user_id}','${service_id}', '${description}', '${latitude}', '${longitude}','${image_url}' )`;
+    const SQLQuery = `INSERT INTO requests ( user_id, service_id, description, location_latitude, location_longitude, image_url) VALUES ('${user_id}','${service_id}', '${description}', '${latitude}', '${longtitude}','${image_url}' )`;
     return dbPool.execute(SQLQuery);
-};
+};  
 
 const updateTaskById = (taskId, taskData) => {
     const {

@@ -1,28 +1,70 @@
 // Import dependencies
+const fs = require("fs");
+
 const TaskModel = require("../models/RequestTaskModel");
 const TaskRequestModel = require("../models/RequestTaskModel");
 const UsersModel = require("../models/users");
+const cloudStorageConfig = require("../config/cloud-storage");
+
+// This function will upload task image to Cloud Storage
+const uploadTaskImage = async (file) => {
+    const destination = `images/task/${file.filename}`; // path to save in the bucket and the file name
+    const fileObject = cloudStorageConfig.bucket.file(destination);
+    const filePath = `./public/images/${file.filename}`; // path to acces images in local
+    
+    try {
+        const options = {
+            metadata: {
+                contentType: file.mimetype,
+            },
+            predefinedAcl: "publicRead", // set public access control in Cloud SQL
+        };
+        // store photo to Cloud SQL
+        await new Promise((resolve, reject) => {
+            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
+            const writeStream = fileObject.createWriteStream(options);
+
+            readStream.on("error", reject);
+            writeStream.on("error", reject);
+            writeStream.on("finish", resolve);
+
+            readStream.pipe(writeStream);
+        });
+        // delete file in public/images directory after upload to Cloud SQL
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Failed to delete file: ${err}`);
+            }
+        });
+        // if success Get the public URL to access the task image
+        const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}}`;
+        return publicUrl;
+    } catch (error) {
+        return error;
+    }
+};
 
 // CREATE a new task
 const createTask = async (req, res) => {
-    // take firebase_uid to find user information in db sql 
+    // get firebase_uid from authMiddleware using authorization access token  to find user information in db sql 
     const firebase_uid = req.user.uid; 
-    // get user_id in db sql
-    const user_id = await UsersModel.getUser_id(firebase_uid);
     const { body } = req;
-  
-    if (!body.taskName || !body.description || !body.customerId) {
-        return res.status(400).json({
-            message: "Invalid input value",
-            data: null,
-        });
-    }
-
+    let image_url; // define var to asign image_url if any
     try {
-        const task = await TaskModel.createTask(user_id, body);
+        if (req.file != null) { // if the request contain a file then upload image to cloud storage
+            const file = req.file; // get file in body->form-data
+            image_url = uploadTaskImage(file); // take the umage_url
+        }
+        console.log(req.file);
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        await TaskModel.createTask(user_id, body, image_url);
         return res.status(201).json({
             message: "Create new task success",
-            data: task,
+            creator_id: user_id,
+            data: body,
+            image_url
         });
     } catch (error) {
         return res.status(500).json({
@@ -230,6 +272,7 @@ const deleteTaskRequestById = async (req, res) => {
 
 module.exports = {
     createTask,
+    uploadTaskImage,
     getAllTasks,
     getTaskById,
     updateTaskById,

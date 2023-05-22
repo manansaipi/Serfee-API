@@ -5,13 +5,15 @@ const controller = require("../controller/RequestTasks");
 
 // Middleware
 const Middleware = require("../middleware/firebase_auth");
+const upload = require("../middleware/multer");
 
 // Task routes
-router.post("/tasks", Middleware.authenticate, controller.createTask);
-router.get("/tasks", controller.getAllTasks);
-router.get("/tasks/:id", controller.getTaskById);
-router.put("/tasks/:id", controller.updateTaskById);
-router.delete("/tasks/:id", controller.deleteTaskById);
+// request task and upload task image into cloud storage
+router.post("/", Middleware.authenticate, upload.single("photo"), controller.createTask);
+router.get("/", controller.getAllTasks);
+router.get("/:id", controller.getTaskById);
+router.put("/:id", controller.updateTaskById);
+router.delete("/:id", controller.deleteTaskById);
 
 // Task request routes
 router.post("/task-requests", controller.createTaskRequest);
