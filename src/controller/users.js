@@ -23,7 +23,6 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     // Get the user ID from the request parameters
     const firebase_uid = req.user;
-    console.log("id: ", id);
     try {
         const [data] = await UsersModel.getUser(firebase_uid); // excecute query
         res.json({

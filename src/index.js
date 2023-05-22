@@ -47,6 +47,6 @@ dns.lookup(require("os").hostname(), async (err, address) => {
         return;
     }
     app.listen(port, () => {
-    console.log(`Server running at http://${address}:${port}`);
+        console.log(`Server running at http://${address}:${port}`);
     });
 });

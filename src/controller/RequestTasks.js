@@ -52,8 +52,7 @@ const createTask = async (req, res) => {
     try {
         if (req.file != null) { // if the request contain a file then upload image to cloud storage
             const file = req.file; // get file in body->form-data
-            image_url = "http://test-img-url.com"
-            // image_url = uploadTaskImage(file); // take the umage_url
+            image_url = uploadTaskImage(file); // take the umage_url
         }
         // get user_id in db sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
