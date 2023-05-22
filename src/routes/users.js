@@ -7,7 +7,6 @@ const upload = require("../middleware/multer");
 
 // Import controller functions
 const {
-    createUser,
     getAllUsers,
     getUserById,
     updateUserById,
@@ -16,9 +15,6 @@ const {
 } = require("../controller/users");
 
 const router = express.Router();
-
-// CREATE user - POST
-router.post("/", createUser);
 
 // READ all users - GET
 router.get("/", getAllUsers);

@@ -23,11 +23,12 @@ const login = async (req, res) => {
         res.status(500).send("Failed to login");
     }
 };
+// CREATE a new user
 const register = async (req, res) => {
     const { body } = req;
     const email = body.email;
     const password = body.password;
-    const userName = email.split("@")[0];
+    const name = body.name;
     if (typeof email !== "string" || email.trim().length === 0) {
         console.log(email);
         throw new Error("Invalid email");
@@ -38,11 +39,12 @@ const register = async (req, res) => {
         const userRecord = await firebaseConfig.admin.auth().createUser({
             email,
             password,
-            displayName: userName
+            displayName: name
         });
         const firebase_uid = userRecord.uid; // take firebase_uid to store into mysql
         if (email) {
-            await UsersModel.createNewUserWhenRegister(firebase_uid, userName, email);
+            // add new user data into mysql
+            await UsersModel.createNewUserWhenRegister(firebase_uid, name, email);
             res.json({ 
                 message: "success regist",
                 user: userRecord.toJSON()

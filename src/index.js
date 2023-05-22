@@ -19,6 +19,10 @@ app.use(express.json());
 */
 app.use(express.static("public/images"));
 
+app.get("/", (res) => {
+    res.send({ message: "connection success" });
+});
+
 app.use("/users", usersRoutes); // Grouping path users in users. jsfile
 
 app.use("/auth", firebaseAuth);

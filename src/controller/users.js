@@ -4,31 +4,6 @@ const fs = require("fs");
 const UsersModel = require("../models/users");
 const firebaseConfig = require("../config/firebase");
 const cloudStorageConfig = require("../config/cloud-storage");
-// CREATE a new user
-const createUser = async (req, res) => {
-    // console.log(req.body)
-    const { body } = req;
-
-    if (!body.full_name || !body.email) {
-        return res.status(400).json({
-            message: "Invalid input value",
-            data: null
-        });
-    }
-
-    try {
-        await UsersModel.createNewUser(body); // excecute query
-        return res.status(201).json({
-            message: "CREATE new user success", 
-            data: body
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            erverMessage: error,
-        });
-    }
-};
 
 const getAllUsers = async (req, res) => {
     try {
@@ -63,20 +38,69 @@ const getUserById = async (req, res) => {
     }
 };
 
+// This function will upload user photo to Cloud Storage
+const uploadUserPhoto = async (firebase_uid, file, email) => {
+    const destination = `images/profile/${email}/${file.filename}`; // path to save in the bucket and the file name
+    const fileObject = cloudStorageConfig.bucket.file(destination);
+    const filePath = `./public/images/${file.filename}`; // path to acces images
+
+    try {
+        const options = {
+            metadata: {
+                contentType: file.mimetype,
+            },
+            predefinedAcl: "publicRead", // set public access control in Cloud SQL
+        };
+        // store photo to Cloud SQL
+        await new Promise((resolve, reject) => {
+            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
+            const writeStream = fileObject.createWriteStream(options);
+
+            readStream.on("error", reject);
+            writeStream.on("error", reject);
+            writeStream.on("finish", resolve);
+
+            readStream.pipe(writeStream);
+        });
+        // do delete file  in public/images directory after upload to Cloud SQL
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Failed to delete file: ${err}`);
+            }
+        });
+        //  if success Get the public URL
+        const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`; 
+        const photoUrl = {
+            photoUrl: publicUrl
+        };
+        // if success update user photoURL in firebase by firebase_uid
+        await firebaseConfig.admin.auth().updateUser(firebase_uid, photoUrl);
+        return publicUrl;
+    } catch (error) {
+        return error;
+    }
+};
+
 const updateUserById = async (req, res) => {
     // Get firebase_uid asign from authMiddleware using authorization access token 
     const firebase_uid = req.user.uid; 
     const { body } = req; // get data from body in JSON
+    const email = body.email;
+    let photo_url;
     try {
+        if (req.file != null) { // if the request contain a file then upload image to cloud storage
+            const file = req.file; // get file in body->form-data
+            photo_url = uploadUserPhoto(firebase_uid, file, email); // take the umage_url
+        }
         // excecute query to update full_name in mysql
-        await UsersModel.updateUser(firebase_uid, body.displayName);
-
+        await UsersModel.updateUser(firebase_uid, body, photo_url);
         // update user data data in firebase
         await firebaseConfig.admin.auth().updateUser(firebase_uid, body);
         res.json({
             message: "UPDATE user success",
             data: {
                 firebase_uid,
+                photo_url,
                 ...body
             }
         });
@@ -117,62 +141,7 @@ const deleteUserById = async (req, res) => {
     }
 };
 
-// This function will upload user photo to Cloud Storage
-const uploadUserPhoto = async (req, res) => {
-    const firebase_uid = req.user.uid; // get firebase_uid from authMiddleware using authorization access token 
-    const file = req.file; // get file in body->form-data
-    const destination = cloudStorageConfig.bucket.file(`images/profile/${file.filename}`); // path to save in the bucket and the file name
-    const filePath = `./public/images/${file.filename}`; // path to acces images
-
-    // Get the public URL
-    const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/images/profile/${file.filename}`; 
-    // need to store this URL to the firebase to access user photo
-    
-    try {
-        const options = {
-            metadata: {
-                contentType: file.mimetype,
-            },
-            predefinedAcl: "publicRead", // set public access control in Cloud SQL
-        };
-        // store photo to Cloud SQL
-        await new Promise((resolve, reject) => {
-            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
-            const writeStream = destination.createWriteStream(options);
-
-            readStream.on("error", reject);
-            writeStream.on("error", reject);
-            writeStream.on("finish", resolve);
-
-            readStream.pipe(writeStream);
-        });
-        // do delete file  in public/images directory after upload to Cloud SQL
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error(`Failed to delete file: ${err}`);
-            }
-        });
-        // get photo url in hte Cloud SQL to store in firebase
-        const photoUrl = {
-            photoUrl: publicUrl
-        };
-        // update user photoURL in firebase by firebase_uid
-        await firebaseConfig.admin.auth().updateUser(firebase_uid, photoUrl);
-        res.json({
-            message: "Upload success",
-            firebase_uid,
-            data: req.file,
-            url: publicUrl
-        });
-    } catch (error) {
-        res.json({
-            message: error
-        });
-    }
-};
-
 module.exports = {
-    createUser,
     getAllUsers,
     getUserById,
     updateUserById,
