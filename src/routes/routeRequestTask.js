@@ -23,6 +23,6 @@ router.put("/task-requests/:id", controller.updateTaskRequestStatus);
 router.delete("/task-requests/:id", controller.deleteTaskRequestById);
 
 // search task
-router.get("/tasks/search", controller.seacrhTasks);
+router.get("/search", controller.seacrhTasks);
 
 module.exports = router;

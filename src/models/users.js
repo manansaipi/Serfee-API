@@ -5,18 +5,13 @@ const getAllUsers = () => {
     return dbPool.execute(SQLQuery);
 };
 
-const getUser = (id) => {
-    const SQLQuery = `SELECT * FROM users WHERE id = '${id}'`;
+const getUser = (firebase_uid) => {
+    const SQLQuery = `SELECT * FROM users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
-const updateUser = (firebase_uid, body) => {
-    const SQLQuery = `UPDATE users SET full_name = '${body.displayName}', user_name = '${body.username}', email = '${body.email}' WHERE firebase_uid = '${firebase_uid}'`;
-    return dbPool.execute(SQLQuery);
-};
-
-const deleteUser = (firebase_uid) => {
-    const SQLQuery = `DELETE FROM users WHERE firebase_uid = '${firebase_uid}'`;
+const updateUser = (firebase_uid, body, photo_url) => {
+    const SQLQuery = `UPDATE users SET full_name = '${body.displayName}', email = '${body.email}', phone_number = '${body.phoneNumber}', photo_url = '${photo_url}' WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -34,7 +29,6 @@ module.exports = {
     getAllUsers,
     getUser,
     updateUser,
-    deleteUser,
     createNewUserWhenRegister,
     getUser_id,
 };

@@ -10,8 +10,6 @@ const {
     getAllUsers,
     getUserById,
     updateUserById,
-    deleteUserById,
-    uploadUserPhoto
 } = require("../controller/users");
 
 const router = express.Router();
@@ -20,15 +18,9 @@ const router = express.Router();
 router.get("/", getAllUsers);
 
 // READ user by ID - GET
-router.get("/:id", getUserById);
+router.get("/current", Middleware.authenticate, getUserById);
 
 // UPDATE user by firebase_uid
-router.patch("/", Middleware.authenticate, updateUserById);
-
-// DELETE user by ID - DELETE
-router.delete("/:id", deleteUserById);
-
-// UPLOAD user photo to Cloud SQL and update user photoURL in firebase
-router.post("/uploadPhoto", Middleware.authenticate, upload.single("photo"), uploadUserPhoto);
+router.patch("/", Middleware.authenticate, upload.single("photo"), updateUserById);
 
 module.exports = router;

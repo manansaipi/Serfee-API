@@ -23,16 +23,11 @@ app.get("/", (res) => {
     res.send({ message: "connection success" });
 });
 
-app.use("/users", usersRoutes); // Grouping path users in users. jsfile
+app.use("/users", usersRoutes); // Grouping path users in users.js file
 
 app.use("/auth", firebaseAuth);
 
 app.use("/task-requests", requestRoutes);
-
-app.use("/test", (req, res) => {
-    // else
-    res.send("hey");
-});
 
 app.use((err, req, res, next) => {
     // err handling
@@ -45,17 +40,13 @@ app.use("/", (req, res) => {
     res.sendStatus(404);
 });
 
-const hostname = "localhost";
 const port = process.env.PORT || 8080;
-
-app.listen(port, () => {
-    console.log(`Server running at http://${hostname}:${port}`);
-});
-
-dns.lookup(require("os").hostname(), (err, address) => {
+dns.lookup(require("os").hostname(), async (err, address) => {
     if (err) {
         console.error(err);
         return;
     }
-    console.log("Server IP:", address);
+    app.listen(port, () => {
+    console.log(`Server running at http://${address}:${port}`);
+    });
 });

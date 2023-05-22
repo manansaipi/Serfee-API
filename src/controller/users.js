@@ -22,10 +22,10 @@ const getAllUsers = async (req, res) => {
 // READ a user by ID
 const getUserById = async (req, res) => {
     // Get the user ID from the request parameters
-    const id = req.params.id;
+    const firebase_uid = req.user;
     console.log("id: ", id);
     try {
-        const [data] = await UsersModel.getUser(id); // excecute query
+        const [data] = await UsersModel.getUser(firebase_uid); // excecute query
         res.json({
             message: "Get user success",
             data
@@ -85,7 +85,7 @@ const updateUserById = async (req, res) => {
     // Get firebase_uid asign from authMiddleware using authorization access token 
     const firebase_uid = req.user.uid; 
     const { body } = req; // get data from body in JSON
-    const email = body.email;
+    const email = body.email; // this email to asign into uplaodUserPhoto to store in cloudStorage path
     let photo_url;
     try {
         if (req.file != null) { // if the request contain a file then upload image to cloud storage
@@ -106,37 +106,8 @@ const updateUserById = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-
-const deleteUserById = async (req, res) => {
-    const { id } = req.params;
-    const { body } = req;
-    console.log("id: ", id);
-    try {
-        const [data] = await UsersModel.getUser(id); // excecute query
-        console.log(data);
-        if (data === "") {
-            res.status(404).json({
-                message: "id not found"
-            });
-        } else {
-            await UsersModel.deleteUser(id); // excecute query
-            res.json({
-                message: "DELETE user success",
-                data: {
-                    id,
-                    body
-                }
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
+            message: "Error",
+            error
         });
     }
 };
@@ -145,6 +116,5 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUserById,
-    deleteUserById,
     uploadUserPhoto
 };
