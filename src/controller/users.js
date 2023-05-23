@@ -76,6 +76,7 @@ const uploadUserPhoto = async (firebase_uid, file, email) => {
         await firebaseConfig.admin.auth().updateUser(firebase_uid, photoUrl);
         return publicUrl;
     } catch (error) {
+        console.log(error);
         return error;
     }
 };
@@ -89,7 +90,7 @@ const updateUserById = async (req, res) => {
     try {
         if (req.file != null) { // if the request contain a file then upload image to cloud storage
             const file = req.file; // get file in body->form-data
-            photo_url = uploadUserPhoto(firebase_uid, file, email); // take the umage_url
+            photo_url = await uploadUserPhoto(firebase_uid, file, email); // take the umage_url
         }
         // excecute query to update full_name in mysql
         await UsersModel.updateUser(firebase_uid, body, photo_url);
