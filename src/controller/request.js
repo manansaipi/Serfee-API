@@ -1,8 +1,7 @@
 // Import dependencies
 const fs = require("fs");
 
-const TaskModel = require("../models/tasks");
-const TaskRequestModel = require("../models/tasks");
+const TaskRequestModel = require("../models/request");
 const UsersModel = require("../models/users");
 const cloudStorageConfig = require("../config/cloud-storage");
 
@@ -57,7 +56,7 @@ const createTask = async (req, res) => {
         // get user_id in db sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
-        await TaskModel.createTask(user_id, body, image_url);
+        await TaskRequestModel.createTask(user_id, body, image_url);
         return res.status(201).json({
             message: "Create new task success",
             creator_id: user_id,
@@ -74,7 +73,7 @@ const createTask = async (req, res) => {
 
 const getAllTasks = async (req, res) => {
     try {
-        const tasks = await TaskModel.getAllTasks();
+        const tasks = await TaskRequestModel.getAllTasks();
         return res.json({
             message: "GET all tasks",
             data: tasks,
@@ -88,13 +87,16 @@ const getAllTasks = async (req, res) => {
 };
 
 const getTaskById = async (req, res) => {
-    const taskId = req.params.id;
+    const firebase_uid = req.user.uid;
     try {
-        const task = await TaskModel.getTaskById(taskId);
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [task] = await TaskRequestModel.myCurrentTask(user_id);
         if (!task) {
             return res.status(404).json({
                 message: "Task not found",
-                data: null,
+                data: task
             });
         }
         return res.json({
@@ -113,7 +115,7 @@ const updateTaskById = async (req, res) => {
     const taskId = req.params.id;
     const { body } = req;
     try {
-        const updatedTask = await TaskModel.updateTaskById(taskId, body);
+        const updatedTask = await TaskRequestModel.updateTaskById(taskId, body);
         if (!updatedTask) {
             return res.status(404).json({
                 message: "Task not found",
@@ -135,7 +137,7 @@ const updateTaskById = async (req, res) => {
 const deleteTaskById = async (req, res) => {
     const taskId = req.params.id;
     try {
-        const deletedTask = await TaskModel.deleteTaskById(taskId);
+        const deletedTask = await TaskRequestModel.deleteTaskById(taskId);
         if (!deletedTask) {
             return res.status(404).json({
                 message: "Task not found",
@@ -154,120 +156,11 @@ const deleteTaskById = async (req, res) => {
     }
 };
 
-const createTaskRequest = async (req, res) => {
-    const { body } = req;
-
-    if (!body.task_id || !body.tasker_id) {
-        return res.status(400).json({
-            message: "Invalid input value",
-            data: null,
-        });
-    }
-
-    try {
-        const request = await TaskRequestModel.createTaskRequest(body);
-        return res.status(201).json({
-            message: "Create new task request success",
-            data: request,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-// Tasker
-const getAllNearTasks = async (req, res) => {
-    const { body } = req;
-    const tasker_latitude = body.latitude;
-    const tasker_longtitude = body.longtitude;
-    const distance = body.distance;
-    try {
-        const [tasks] = await TaskModel.getAllNearTasks(tasker_latitude, tasker_longtitude, distance);
-        return res.json({
-            message: "GET all tasks",
-            data: tasks,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            error,
-        });
-    }
-};
-
-const getTaskRequestsByTaskId = async (req, res) => {
-    const taskId = req.params.task_id;
-    try {
-        const requests = await TaskRequestModel.getTaskRequestsByTaskId(taskId);
-        return res.json({
-            message: "GET task requests by task ID",
-            data: requests,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-
-const updateTaskRequestStatus = async (req, res) => {
-    const requestId = req.params.id;
-    const { body } = req;
-    try {
-        const updatedRequest = await TaskRequestModel.updateTaskRequestStatus(
-            requestId,
-            body.status
-        );
-        if (!updatedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
-            });
-        }
-        return res.json({
-            message: "Update task request status success",
-            data: updatedRequest,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-
-const deleteTaskRequestById = async (req, res) => {
-    const requestId = req.params.id;
-    try {
-        const deletedRequest = await TaskRequestModel.deleteTaskRequestById(
-            requestId
-        );
-        if (!deletedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
-            });
-        }
-        return res.json({
-            message: "Delete task request success",
-            data: deletedRequest,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-
 const seacrhTasks = async (req, res) => {
     const { keyword } = req.query;
 
     try {
-        const tasks = await TaskModel.serchTasks(keyword);
+        const tasks = await TaskRequestModel.serchTasks(keyword);
         return res.json({
             message: "Search tasks success",
             data: tasks,
@@ -287,10 +180,5 @@ module.exports = {
     getTaskById,
     updateTaskById,
     deleteTaskById,
-    createTaskRequest,
-    getAllNearTasks,
-    getTaskRequestsByTaskId,
-    updateTaskRequestStatus,
-    deleteTaskRequestById,
     seacrhTasks,
 };

@@ -1,7 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const controller = require("../controller/tasks");
+const TaskRequestController = require("../controller/request");
+const TaskResponseController = require("../controller/response");
 
 // Middleware
 const Middleware = require("../middleware/firebase_auth");
@@ -9,20 +10,20 @@ const upload = require("../middleware/multer");
 
 // Request (user)
 // request task and upload task image into cloud storage
-router.post("/user", Middleware.authenticate, upload.single("photo"), controller.createTask);
-router.get("/user", controller.getAllTasks);
-router.get("/user:id", controller.getTaskById);
-router.put("/user:id", controller.updateTaskById);
-router.delete("/user:id", controller.deleteTaskById);
+router.post("/request", Middleware.authenticate, upload.single("photo"), TaskRequestController.createTask);
+router.get("/request", TaskRequestController.getAllMyTasks);
+router.get("/my", Middleware.authenticate, TaskRequestController.getTaskById);
+router.put("/request:id", TaskRequestController.updateTaskById);
+router.delete("/request:id", TaskRequestController.deleteTaskById);
 
 // Tasker
-router.post("/tasker", controller.createTaskRequest);
-router.get("/tasker", controller.getAllNearTasks);
-router.get("/tasker/task/:task_id", controller.getTaskRequestsByTaskId);
-router.put("/tasker/:id", controller.updateTaskRequestStatus);
-router.delete("/tasker/:id", controller.deleteTaskRequestById);
+router.post("/response", TaskResponseController.createTaskRequest);
+router.get("/response", Middleware.authenticate, TaskResponseController.getAllNearTasks);
+router.get("/response/task/:task_id", TaskResponseController.getTaskRequestsByTaskId);
+router.put("/response/:id", TaskResponseController.updateTaskRequestStatus);
+router.delete("/response/:id", TaskResponseController.deleteTaskRequestById);
 
 // search task
-router.get("/search", controller.seacrhTasks);
+router.get("/search", TaskRequestController.seacrhTasks);
 
 module.exports = router;
