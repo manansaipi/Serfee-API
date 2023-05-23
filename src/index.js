@@ -6,7 +6,7 @@ const dns = require("dns");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
 
-const requestRoutes = require("./routes/routeRequestTask");
+const tasksRoutes = require("./routes/tasks");
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 */
 app.use(express.static("public/images"));
 
-app.get("/", (res) => {
+app.get("/", (req, res) => {
     res.send({ message: "connection success" });
 });
 
@@ -27,7 +27,7 @@ app.use("/users", usersRoutes); // Grouping path users in users.js file
 
 app.use("/auth", firebaseAuth);
 
-app.use("/task-requests", requestRoutes);
+app.use("/tasks", tasksRoutes);
 
 app.use((err, req, res, next) => {
     // err handling
