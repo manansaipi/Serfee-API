@@ -1,16 +1,7 @@
 const dbPool = require("../config/mysql");
 
-const getAllNearTasks = (tasker_latitude, tasker_longtitude, distance) => {
-    // get all near task from tasker location within 1km
-    const SQLQuery = `SELECT *
-                        FROM Requests
-                        WHERE (
-                            6371 * acos(
-                                cos(radians(location_latitude)) * cos(radians(${tasker_latitude})) *
-                                cos(radians(${tasker_longtitude}) - radians(location_longitude)) +
-                                sin(radians(location_latitude)) * sin(radians(${tasker_latitude}))
-                            )
-                        ) <= ${distance};`;
+const getAllTasks = () => {
+    const SQLQuery = "SELECT * FROM Requests";
     return dbPool.execute(SQLQuery);
 };
 
@@ -40,8 +31,17 @@ const deleteTaskById = (taskId) => {
     return dbPool.execute(SQLQuery);
 };
 
-const getAllTaskRequests = () => {
-    const SQLQuery = "SELECT * FROM task_requests";
+const getAllNearTasks = (tasker_latitude, tasker_longtitude, distance) => {
+    // get all near task from tasker location within 1km
+    const SQLQuery = `SELECT *
+                        FROM Requests
+                        WHERE (
+                            6371 * acos(
+                                cos(radians(location_latitude)) * cos(radians(${tasker_latitude})) *
+                                cos(radians(${tasker_longtitude}) - radians(location_longitude)) +
+                                sin(radians(location_latitude)) * sin(radians(${tasker_latitude}))
+                            )
+                        ) <= ${distance};`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -70,12 +70,12 @@ const serchTasks = (keyword) => {
     return dbPool.execute(SQLQuery);
 };
 module.exports = {
-    getAllNearTasks,
+    getAllTasks,
     getTaskById,
     createTask,
     updateTaskById,
     deleteTaskById,
-    getAllTaskRequests,
+    getAllNearTasks,
     getTaskRequestsByTaskId,
     createTaskRequest,
     updateTaskRequestStatus,

@@ -74,7 +74,7 @@ const createTask = async (req, res) => {
 
 const getAllTasks = async (req, res) => {
     try {
-        // const tasks = await TaskModel.getAllTasks();
+        const tasks = await TaskModel.getAllTasks();
         return res.json({
             message: "GET all tasks",
             data: tasks,
@@ -183,8 +183,6 @@ const getAllNearTasks = async (req, res) => {
     const tasker_latitude = body.latitude;
     const tasker_longtitude = body.longtitude;
     const distance = body.distance;
-    console.log(tasker_latitude);
-    console.log(tasker_longtitude);
     try {
         const [tasks] = await TaskModel.getAllNearTasks(tasker_latitude, tasker_longtitude, distance);
         return res.json({
