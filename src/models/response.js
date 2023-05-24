@@ -19,9 +19,8 @@ const getTaskRequestsByTaskId = (taskId) => {
     return dbPool.execute(SQLQuery);
 };
 
-const createTaskRequest = (requestData) => {
-    const { taskId, taskerId } = requestData;
-    const SQLQuery = `INSERT INTO task_requests (taskId, taskerId) VALUES ('${taskId}', '${taskerId}')`;
+const createOffering = (user_id, request_id, message) => {
+    const SQLQuery = `INSERT INTO Offers (user_id, request_id, message) VALUES ('${user_id}', '${request_id}', '${message}')`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -38,7 +37,7 @@ const deleteTaskRequestById = (requestId) => {
 module.exports = {
     getAllNearTasks,
     getTaskRequestsByTaskId,
-    createTaskRequest,
+    createOffering,
     updateTaskRequestStatus,
     deleteTaskRequestById,
 };

@@ -6,7 +6,7 @@ const getAllTasks = () => {
 };
 
 const myCurrentTask = (user_id) => {
-    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id} AND status = "Available"'`;
+    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Available"`;
     return dbPool.execute(SQLQuery);
 };
 

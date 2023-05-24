@@ -71,7 +71,7 @@ const createTask = async (req, res) => {
     }
 };
 
-const getAllTasks = async (req, res) => {
+const getAllMyTasks = async (req, res) => {
     try {
         const tasks = await TaskRequestModel.getAllTasks();
         return res.json({
@@ -93,14 +93,8 @@ const getTaskById = async (req, res) => {
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
         const [task] = await TaskRequestModel.myCurrentTask(user_id);
-        if (!task) {
-            return res.status(404).json({
-                message: "Task not found",
-                data: task
-            });
-        }
         return res.json({
-            message: "Get task success",
+            message: "Get my current task",
             data: task,
         });
     } catch (error) {
@@ -176,7 +170,7 @@ const seacrhTasks = async (req, res) => {
 module.exports = {
     createTask,
     uploadTaskImage,
-    getAllTasks,
+    getAllMyTasks,
     getTaskById,
     updateTaskById,
     deleteTaskById,

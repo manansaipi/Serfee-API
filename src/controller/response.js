@@ -1,22 +1,24 @@
 // Import dependencies
 
-const TaskResponseModel = require("../models/request");
+const TaskResponseModel = require("../models/response");
+const UsersModel = require("../models/users");
 
-const createTaskRequest = async (req, res) => {
+const createOffering = async (req, res) => {
+    // get firebase_uid from access token to get user id in table sql
+    const firebase_uid = req.user.uid;
     const { body } = req;
-
-    if (!body.task_id || !body.tasker_id) {
-        return res.status(400).json({
-            message: "Invalid input value",
-            data: null,
-        });
-    }
-
+    const message = body.message;
+    const request_id = body.request_id;
     try {
-        const request = await TaskResponseModel.createTaskRequest(body);
+        // get user_id in table sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        // create an offering as a tasker
+        await TaskResponseModel.createOffering(user_id, request_id, message);
         return res.status(201).json({
-            message: "Create new task request success",
-            data: request,
+            message: "Create offering success",
+            tasker_id: user_id,
+            body
         });
     } catch (error) {
         return res.status(500).json({
@@ -34,7 +36,7 @@ const getAllNearTasks = async (req, res) => {
     try {
         const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longtitude, distance);
         return res.json({
-            message: "GET all tasks",
+            message: "GET all near tasks",
             data: tasks,
         });
     } catch (error) {
@@ -112,7 +114,7 @@ const deleteTaskRequestById = async (req, res) => {
 };
 
 module.exports = {
-    createTaskRequest,
+    createOffering,
     getAllNearTasks,
     getTaskRequestsByTaskId,
     updateTaskRequestStatus,
