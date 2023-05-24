@@ -1,40 +1,39 @@
 const dbPool = require("../config/mysql");
 
 const getAllUsers = () => {
-    const SQLQuery = "SELECT * FROM users";
+    const SQLQuery = "SELECT * FROM Users";
     return dbPool.execute(SQLQuery);
 };
 
-const getUser = (id) => {
-    const SQLQuery = `SELECT * FROM users WHERE id = '${id}'`;
+const getUser = (firebase_uid) => {
+    const SQLQuery = `SELECT * FROM Users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
-const createNewUser = (body) => {
-    const SQLQuery = `INSERT INTO users (full_name, email) VALUES ('${body.full_name}', '${body.email}')`;
+const updateUser = (firebase_uid, body, photo_url) => {
+    const SQLQuery = `UPDATE Users SET full_name = '${body.displayName}', email = '${body.email}', phone_number = '${body.phoneNumber}', photo_url = '${photo_url}' WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
-const updateUser = (firebase_uid, displayName) => {
-    const SQLQuery = `UPDATE users SET full_name = '${displayName}' WHERE firebase_uid = '${firebase_uid}'`;
+const createNewUserWhenRegister = (firebase_uid, name, email) => {
+    const SQLQuery = `INSERT INTO Users (firebase_uid, full_name, email) VALUES ('${firebase_uid}', '${name}', '${email}')`;
     return dbPool.execute(SQLQuery);
 };
 
+const getUser_id = (firebase_uid) => {
+    const SQLQuery = `SELECT user_id FROM Users WHERE firebase_uid = '${firebase_uid}'`;
+    return dbPool.execute(SQLQuery);
+};
 const deleteUser = (firebase_uid) => {
-    const SQLQuery = `DELETE FROM users WHERE firebase_uid = '${firebase_uid}'`;
-    return dbPool.execute(SQLQuery);
-};
-
-const createNewUserWhenRegister = (firebase_uid, userName, email) => {
-    const SQLQuery = `INSERT INTO users (firebase_uid, user_name, email) VALUES ('${firebase_uid}', '${userName}', '${email}')`;
+    const SQLQuery = `DELETE FROM Users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
 
 module.exports = {
     getAllUsers,
     getUser,
-    createNewUser,
     updateUser,
-    deleteUser,
-    createNewUserWhenRegister
+    createNewUserWhenRegister,
+    getUser_id,
+    deleteUser
 };

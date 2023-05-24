@@ -6,7 +6,7 @@ const config = require("../config/firebase");
     and store it in req.user so we can use the req.user in controller
 */
 const authenticate = async (req, res, next) => {
-    const idToken = req.headers.authorization; // get access token
+    const idToken = req.headers.authorization || req.headers.Authorization; // get access token
     try {
         const decodeToken = await config.admin.auth().verifyIdToken(idToken);
         req.user = decodeToken; // asign req.user with decodeToken to access user's information
@@ -14,7 +14,8 @@ const authenticate = async (req, res, next) => {
         next();
     } catch (error) {
         res.status(401).json({
-            error: "Unauthorized"
+            message: "Unauthorized",
+            error
         });
     }
 };

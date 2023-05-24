@@ -6,7 +6,7 @@ const dns = require("dns");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
 
-const requestRoutes = require("./routes/routeRequestTask");
+const tasksRoutes = require("./routes/tasks");
 
 const app = express();
 
@@ -19,16 +19,15 @@ app.use(express.json());
 */
 app.use(express.static("public/images"));
 
-app.use("/users", usersRoutes); // Grouping path users in users. jsfile
+app.get("/", (req, res) => {
+    res.send({ message: "connection success" });
+});
+
+app.use("/users", usersRoutes); // Grouping path users in users.js file
 
 app.use("/auth", firebaseAuth);
 
-app.use("/task-requests", requestRoutes);
-
-app.use("/test", (req, res) => {
-    // else
-    res.send("hey");
-});
+app.use("/tasks", tasksRoutes);
 
 app.use((err, req, res, next) => {
     // err handling
@@ -41,17 +40,13 @@ app.use("/", (req, res) => {
     res.sendStatus(404);
 });
 
-const hostname = "localhost";
 const port = process.env.PORT || 8080;
-
-app.listen(port, () => {
-    console.log(`Server running at http://${hostname}:${port}`);
-});
-
-dns.lookup(require("os").hostname(), (err, address) => {
+dns.lookup(require("os").hostname(), async (err, address) => {
     if (err) {
         console.error(err);
         return;
     }
-    console.log("Server IP:", address);
+    app.listen(port, () => {
+        console.log(`Server running at http://${address}:${port}`);
+    });
 });
