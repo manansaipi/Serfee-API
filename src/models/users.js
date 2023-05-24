@@ -24,6 +24,10 @@ const getUser_id = (firebase_uid) => {
     const SQLQuery = `SELECT user_id FROM Users WHERE firebase_uid = '${firebase_uid}'`;
     return dbPool.execute(SQLQuery);
 };
+const deleteUser = (firebase_uid) => {
+    const SQLQuery = `DELETE FROM Users WHERE firebase_uid = '${firebase_uid}'`;
+    return dbPool.execute(SQLQuery);
+};
 
 module.exports = {
     getAllUsers,
@@ -31,4 +35,5 @@ module.exports = {
     updateUser,
     createNewUserWhenRegister,
     getUser_id,
+    deleteUser
 };

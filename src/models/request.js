@@ -1,7 +1,7 @@
 const dbPool = require("../config/mysql");
 
-const getAllTasks = () => {
-    const SQLQuery = "SELECT * FROM Requests";
+const getAllMyTasks = (user_id) => {
+    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}'`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -31,15 +31,23 @@ const deleteTaskById = (taskId) => {
     return dbPool.execute(SQLQuery);
 };
 
+const getResponseProfile = (offer_id) => {
+    const SQLQuery = `SELECT *
+                        FROM Users
+                        WHERE user_id = (SELECT user_id FROM Offers WHERE offer_id = '${offer_id}' AND status = "Active");`;
+    return dbPool.execute(SQLQuery);
+};
+
 const serchTasks = (keyword) => {
     const SQLQuery = `SELECT * FROM tasks WHERE taskName LIKE '%${keyword}' OR description LIKE '${keyword}'`;
     return dbPool.execute(SQLQuery);
 };
 module.exports = {
-    getAllTasks,
+    getAllMyTasks,
     myCurrentTask,
     createTask,
     updateTaskById,
     deleteTaskById,
+    getResponseProfile,
     serchTasks,
 };

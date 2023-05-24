@@ -72,10 +72,14 @@ const createTask = async (req, res) => {
 };
 
 const getAllMyTasks = async (req, res) => {
+    const firebase_uid = req.user.uid;
     try {
-        const tasks = await TaskRequestModel.getAllTasks();
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [tasks] = await TaskRequestModel.getAllMyTasks(user_id);
         return res.json({
-            message: "GET all tasks",
+            message: "GET all my recent tasks",
             data: tasks,
         });
     } catch (error) {
@@ -150,6 +154,26 @@ const deleteTaskById = async (req, res) => {
     }
 };
 
+const getResponseProfile = async (req, res) => {
+    const { body } = req;
+    // const tasker_id = body.tasker_id;
+    const offer_id = body.offer_id;
+    console.log(offer_id);
+    try {
+        const [tasker_profile] = await TaskRequestModel.getResponseProfile(offer_id);
+        return res.json({
+            message: "Get response",
+            tasker_profile,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+
 const seacrhTasks = async (req, res) => {
     const { keyword } = req.query;
 
@@ -174,5 +198,6 @@ module.exports = {
     getTaskById,
     updateTaskById,
     deleteTaskById,
+    getResponseProfile,
     seacrhTasks,
 };

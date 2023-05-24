@@ -11,11 +11,13 @@ const upload = require("../middleware/multer");
 /* Request (user) */
 // request task and upload task image into cloud storage
 router.post("/request", Middleware.authenticate, upload.single("photo"), TaskRequestController.createTask);
-router.get("/request", TaskRequestController.getAllMyTasks);
+// get all my recent task
+router.get("/request", Middleware.authenticate, TaskRequestController.getAllMyTasks);
 // get my active task
 router.get("/my", Middleware.authenticate, TaskRequestController.getTaskById);
 router.put("/request:id", TaskRequestController.updateTaskById);
 router.delete("/request:id", TaskRequestController.deleteTaskById);
+router.get("/getresponse", Middleware.authenticate, TaskRequestController.getResponseProfile);
 
 /* Response (Tasker) */
 // Tasker give an offering to request

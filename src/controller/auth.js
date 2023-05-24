@@ -20,7 +20,10 @@ const login = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to login");
+        res.status(500).json({
+            message: "Failed to login",
+            error
+        });
     }
 };
 // CREATE a new user
