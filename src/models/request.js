@@ -6,15 +6,15 @@ const getAllMyTasks = (user_id) => {
 };
 
 const myCurrentTask = (user_id) => {
-    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Available"`;
+    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Active"`;
     return dbPool.execute(SQLQuery);
 };
 
 const createTask = (user_id, body, image_url) => {
     const {
-        service_id, description, latitude, longtitude
+        category_id, description, latitude, longtitude
     } = body;
-    const SQLQuery = `INSERT INTO Requests ( user_id, service_id, description, location_latitude, location_longitude, image_url) VALUES ('${user_id}','${service_id}', '${description}', '${latitude}', '${longtitude}','${image_url}' )`;
+    const SQLQuery = `INSERT INTO Requests ( user_id, category_id, description, location_latitude, location_longitude, image_url, created_at) VALUES ('${user_id}','${category_id}', '${description}', '${latitude}', '${longtitude}','${image_url}', NOW() )`;
     return dbPool.execute(SQLQuery);
 };  
 

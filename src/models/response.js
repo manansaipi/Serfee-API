@@ -20,7 +20,7 @@ const getTaskRequestsByTaskId = (taskId) => {
 };
 
 const createOffering = (user_id, request_id, message) => {
-    const SQLQuery = `INSERT INTO Offers (user_id, request_id, message) VALUES ('${user_id}', '${request_id}', '${message}')`;
+    const SQLQuery = `INSERT INTO Offers (user_id, request_id, message, created_at) VALUES ('${user_id}', '${request_id}', '${message}', NOW())`;
     return dbPool.execute(SQLQuery);
 };
 
