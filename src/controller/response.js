@@ -1,5 +1,5 @@
 // Import dependencies
-const geolib = require('geolib');
+const geolib = require("geolib");
 
 const TaskResponseModel = require("../models/response");
 const UsersModel = require("../models/users");
@@ -31,28 +31,29 @@ const createOffering = async (req, res) => {
 // Tasker
 const getAllNearTasks = async (req, res) => {
     const { body } = req;
-    // get tasker location
+    // get tasker location latitude and longitude
     const tasker_latitude = body.latitude;
     const tasker_longitude = body.longitude;
     // radius (filter) in km
     const radius = body.radius;
     try {
         const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longitude, radius);
-        if (tasks != "") {
+        if (tasks !== "") {
+            // get task location latitude and longitude
             const task_latitude = tasks[0].location_latitude;
             const task_longitude = tasks[0].location_longitude;
-            
+            // asign tasker and task location
             const tasker_location = { latitude: tasker_latitude, longitude: tasker_longitude };
             const task_location = { latitude: task_latitude, longitude: task_longitude };
+            // get distance between tasker and  task
             const distance = geolib.getDistance(tasker_location, task_location); 
             return res.json({
                 message: "GET all near tasks",
                 data: tasks,
                 distance
             });
-        } else {
-            res.json({message: "no task in ur location"})
-        }
+        } 
+        return res.send({ message: "no task in ur location" });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
