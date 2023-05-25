@@ -1,4 +1,5 @@
 // Import dependencies
+const geolib = require('geolib');
 
 const TaskResponseModel = require("../models/response");
 const UsersModel = require("../models/users");
@@ -30,16 +31,30 @@ const createOffering = async (req, res) => {
 // Tasker
 const getAllNearTasks = async (req, res) => {
     const { body } = req;
+    // get tasker location
     const tasker_latitude = body.latitude;
-    const tasker_longtitude = body.longtitude;
-    const distance = body.distance;
+    const tasker_longitude = body.longitude;
+    // radius (filter) in km
+    const radius = body.radius;
     try {
-        const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longtitude, distance);
-        return res.json({
-            message: "GET all near tasks",
-            data: tasks,
-        });
+        const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longitude, radius);
+        if (tasks != "") {
+            const task_latitude = tasks[0].location_latitude;
+            const task_longitude = tasks[0].location_longitude;
+            
+            const tasker_location = { latitude: tasker_latitude, longitude: tasker_longitude };
+            const task_location = { latitude: task_latitude, longitude: task_longitude };
+            const distance = geolib.getDistance(tasker_location, task_location); 
+            return res.json({
+                message: "GET all near tasks",
+                data: tasks,
+                distance
+            });
+        } else {
+            res.json({message: "no task in ur location"})
+        }
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             error,
