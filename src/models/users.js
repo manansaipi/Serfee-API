@@ -29,11 +29,22 @@ const deleteUser = (firebase_uid) => {
     return dbPool.execute(SQLQuery);
 };
 
+const getReviewCountAndRating = (recipient_id) => {
+    const SQLQuery = `SELECT review_count, rating FROM Users WHERE user_id = '${recipient_id}'`;
+    return dbPool.execute(SQLQuery);
+};
+
+const updateUserRating = (recipient_id, newRating) => {
+    const SQLQuery = `UPDATE Users SET rating = '${newRating}' WHERE user_id = '${recipient_id}'`;
+    return dbPool.execute(SQLQuery);
+};
 module.exports = {
     getAllUsers,
     getUser,
     updateUser,
     createNewUserWhenRegister,
     getUser_id,
-    deleteUser
+    deleteUser,
+    getReviewCountAndRating,
+    updateUserRating
 };
