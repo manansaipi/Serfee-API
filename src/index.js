@@ -5,8 +5,8 @@ const express = require("express");
 const dns = require("dns");
 const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
-
 const tasksRoutes = require("./routes/tasks");
+const reviewsRoutes = require("./routes/reviews");
 
 const app = express();
 
@@ -28,6 +28,8 @@ app.use("/users", usersRoutes); // Grouping path users in users.js file
 app.use("/auth", firebaseAuth);
 
 app.use("/tasks", tasksRoutes);
+
+app.use("/reviews", reviewsRoutes);
 
 app.use((err, req, res, next) => {
     // err handling

@@ -1,16 +1,16 @@
 const dbPool = require("../config/mysql");
 
-const getAllNearTasks = (tasker_latitude, tasker_longtitude, distance) => {
+const getAllNearTasks = (tasker_latitude, tasker_longitude, radius) => {
     // get all near task from tasker location within 1km
     const SQLQuery = `SELECT *
                         FROM Requests
                         WHERE (
                             6371 * acos(
                                 cos(radians(location_latitude)) * cos(radians(${tasker_latitude})) *
-                                cos(radians(${tasker_longtitude}) - radians(location_longitude)) +
+                                cos(radians(${tasker_longitude}) - radians(location_longitude)) +
                                 sin(radians(location_latitude)) * sin(radians(${tasker_latitude}))
                             )
-                        ) <= ${distance};`;
+                        ) <= ${radius};`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -20,7 +20,7 @@ const getTaskRequestsByTaskId = (taskId) => {
 };
 
 const createOffering = (user_id, request_id, message) => {
-    const SQLQuery = `INSERT INTO Offers (user_id, request_id, message) VALUES ('${user_id}', '${request_id}', '${message}')`;
+    const SQLQuery = `INSERT INTO Offers (user_id, request_id, message, created_at) VALUES ('${user_id}', '${request_id}', '${message}', NOW())`;
     return dbPool.execute(SQLQuery);
 };
 

@@ -1,4 +1,5 @@
 // Import dependencies
+const geolib = require("geolib");
 
 const TaskResponseModel = require("../models/response");
 const UsersModel = require("../models/users");
@@ -15,6 +16,7 @@ const createOffering = async (req, res) => {
         const user_id = (data[0].user_id);
         // create an offering as a tasker
         await TaskResponseModel.createOffering(user_id, request_id, message);
+        // triger notification to send to user mobile here
         return res.status(201).json({
             message: "Create offering success",
             tasker_id: user_id,
@@ -30,16 +32,31 @@ const createOffering = async (req, res) => {
 // Tasker
 const getAllNearTasks = async (req, res) => {
     const { body } = req;
+    // get tasker location latitude and longitude
     const tasker_latitude = body.latitude;
-    const tasker_longtitude = body.longtitude;
-    const distance = body.distance;
+    const tasker_longitude = body.longitude;
+    // radius (filter) in km
+    const radius = body.radius;
     try {
-        const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longtitude, distance);
-        return res.json({
-            message: "GET all near tasks",
-            data: tasks,
-        });
+        const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longitude, radius);
+        if (tasks !== "") {
+            // get task location latitude and longitude
+            const task_latitude = tasks[0].location_latitude;
+            const task_longitude = tasks[0].location_longitude;
+            // asign tasker and task location
+            const tasker_location = { latitude: tasker_latitude, longitude: tasker_longitude };
+            const task_location = { latitude: task_latitude, longitude: task_longitude };
+            // get distance between tasker and  task
+            const distance = geolib.getDistance(tasker_location, task_location); 
+            return res.json({
+                message: "GET all near tasks",
+                data: tasks,
+                distance
+            });
+        } 
+        return res.send({ message: "no task in ur location" });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             error,
