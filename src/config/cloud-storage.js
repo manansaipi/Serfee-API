@@ -2,11 +2,11 @@ const { Storage } = require("@google-cloud/storage");
 
 // credentials-key
 const storage = new Storage({
-    projectId: "qwiklabs-gcp-01-b041cd9c1b6b",
+    projectId: process.env.CS_PROJECT_ID,
     keyFilename: "credentials/cloud-storage.json", 
 });
 
-const bucketName = "abdul_bucket3";
+const bucketName = process.env.CS_BUCKET_NAME;
 
 const bucket = storage.bucket(bucketName); // my bucket name in the cloud
 
