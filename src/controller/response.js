@@ -65,12 +65,12 @@ const getAllNearTasks = async (req, res) => {
 };
 
 const getTaskRequestsByTaskId = async (req, res) => {
-    const taskId = req.params.task_id;
+    const taskId = req.params.id;
     try {
-        const requests = await TaskResponseModel.getTaskRequestsByTaskId(taskId);
+        const [data] = await TaskResponseModel.getTaskRequestsByTaskId(taskId);
         return res.json({
             message: "GET task requests by task ID",
-            data: requests,
+            data
         });
     } catch (error) {
         return res.status(500).json({

@@ -15,7 +15,7 @@ const getAllNearTasks = (tasker_latitude, tasker_longitude, radius) => {
 };
 
 const getTaskRequestsByTaskId = (taskId) => {
-    const SQLQuery = `SELECT * FROM task_requests WHERE task_id = '${taskId}'`;
+    const SQLQuery = `SELECT * FROM Requests WHERE request_id = '${taskId}'`;
     return dbPool.execute(SQLQuery);
 };
 

@@ -23,4 +23,7 @@ router.get("/current", Middleware.authenticate, getUserById);
 // UPDATE user by firebase_uid
 router.patch("/", Middleware.authenticate, upload.single("photo"), updateUserById);
 
+// READ user by ID - GET
+router.get("/profileComplete", Middleware.authenticate); // fix
+
 module.exports = router;

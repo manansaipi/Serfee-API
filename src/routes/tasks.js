@@ -24,7 +24,7 @@ router.get("/getresponse", Middleware.authenticate, TaskRequestController.getRes
 router.post("/response", Middleware.authenticate, TaskResponseController.createOffering);
 // tasker get all near task
 router.get("/response", Middleware.authenticate, TaskResponseController.getAllNearTasks);
-router.get("/response/task/:task_id", TaskResponseController.getTaskRequestsByTaskId);
+router.get("/respons/:id", Middleware.authenticate, TaskResponseController.getTaskRequestsByTaskId);
 router.put("/response/:id", TaskResponseController.updateTaskRequestStatus);
 router.delete("/response/:id", TaskResponseController.deleteTaskRequestById);
 

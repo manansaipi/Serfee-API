@@ -12,9 +12,9 @@ const myCurrentTask = (user_id) => {
 
 const createTask = (user_id, body, image_url) => {
     const {
-        category_id, description, latitude, longtitude
+        title, category_id, description, latitude, longtitude
     } = body;
-    const SQLQuery = `INSERT INTO Requests ( user_id, category_id, description, location_latitude, location_longitude, image_url, created_at) VALUES ('${user_id}','${category_id}', '${description}', '${latitude}', '${longtitude}','${image_url}', NOW() )`;
+    const SQLQuery = `INSERT INTO Requests ( user_id, title, category_id, description, location_latitude, location_longitude, image_url, created_at) VALUES ('${user_id}', '${title}' ,'${category_id}', '${description}', '${latitude}', '${longtitude}','${image_url}', NOW() )`;
     return dbPool.execute(SQLQuery);
 };  
 
