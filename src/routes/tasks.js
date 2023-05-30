@@ -31,4 +31,10 @@ router.delete("/response/:id", TaskResponseController.deleteTaskRequestById);
 // search task
 router.get("/search", TaskRequestController.seacrhTasks);
 
+// Cancel offer
+router.put("/response/:id/cancel", Middleware.authenticate, TaskResponseController.cancelOffer);
+
+// Accept offer
+router.put("/response/:id/accept", Middleware.authenticate, TaskResponseController.acceptOffer);
+
 module.exports = router;
