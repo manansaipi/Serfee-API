@@ -7,22 +7,23 @@ const UsersModel = require("../models/users");
 const createOffering = async (req, res) => {
     // get firebase_uid from access token to get user id in table sql
     const firebase_uid = req.user.uid;
-    const { body } = req;
-    const message = body.message;
-    const request_id = body.request_id;
+    const message = req.body.message;
+    const request_id = req.body.request_id;
     try {
-        // get user_id in table sql
+    // get user_id in table sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
-        const user_id = (data[0].user_id);
+        const user_id = data[0].user_id;
         // create an offering as a tasker
         await TaskResponseModel.createOffering(user_id, request_id, message);
         // triger notification to send to user mobile here
         return res.status(201).json({
-            message: "Create offering success",
+            messages: "Create offering success",
             tasker_id: user_id,
-            body
+            message,
+            request_id
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             serverMessage: error,
@@ -31,29 +32,38 @@ const createOffering = async (req, res) => {
 };
 // Tasker
 const getAllNearTasks = async (req, res) => {
-    const { body } = req;
     // get tasker location latitude and longitude
-    const tasker_latitude = body.latitude;
-    const tasker_longitude = body.longitude;
+    const tasker_latitude = req.body.latitude;
+    const tasker_longitude = req.body.longitude;
     // radius (filter) in km
-    const radius = body.radius;
+    const radius = req.body.radius;
     try {
-        const [tasks] = await TaskResponseModel.getAllNearTasks(tasker_latitude, tasker_longitude, radius);
+        const [tasks] = await TaskResponseModel.getAllNearTasks(
+            tasker_latitude,
+            tasker_longitude,
+            radius
+        );
         if (tasks !== "") {
             // get task location latitude and longitude
             const task_latitude = tasks[0].location_latitude;
             const task_longitude = tasks[0].location_longitude;
             // asign tasker and task location
-            const tasker_location = { latitude: tasker_latitude, longitude: tasker_longitude };
-            const task_location = { latitude: task_latitude, longitude: task_longitude };
+            const tasker_location = {
+                latitude: tasker_latitude,
+                longitude: tasker_longitude,
+            };
+            const task_location = {
+                latitude: task_latitude,
+                longitude: task_longitude,
+            };
             // get distance between tasker and  task
-            const distance = geolib.getDistance(tasker_location, task_location); 
+            const distance = geolib.getDistance(tasker_location, task_location);
             return res.json({
                 message: "GET all near tasks",
                 data: tasks,
-                distance
+                distance,
             });
-        } 
+        }
         return res.send({ message: "no task in ur location" });
     } catch (error) {
         console.log(error);
@@ -65,12 +75,12 @@ const getAllNearTasks = async (req, res) => {
 };
 
 const getTaskRequestsByTaskId = async (req, res) => {
-    const taskId = req.params.task_id;
+    const taskId = req.params.id;
     try {
-        const requests = await TaskResponseModel.getTaskRequestsByTaskId(taskId);
+        const [data] = await TaskResponseModel.getTaskRequestsByTaskId(taskId);
         return res.json({
             message: "GET task requests by task ID",
-            data: requests,
+            data
         });
     } catch (error) {
         return res.status(500).json({
@@ -80,23 +90,61 @@ const getTaskRequestsByTaskId = async (req, res) => {
     }
 };
 
-const updateTaskRequestStatus = async (req, res) => {
-    const requestId = req.params.id;
-    const { body } = req;
+const getAllMyOffer = async (req, res) => {
+    const firebase_uid = req.user.uid;
     try {
-        const updatedRequest = await TaskResponseModel.updateTaskRequestStatus(
-            requestId,
-            body.status
-        );
-        if (!updatedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [offers] = await TaskResponseModel.getAllMyOffer(user_id);
+        if (offers === "") {
+            return res.json({
+                message: "Do not have any offering yet"
             });
         }
+        return res.json({
+            message: "GET all my recent offer",
+            data: offers
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+
+const getMyOffer = async (req, res) => {
+    const firebase_uid = req.user.uid;
+    try {
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [offer] = await TaskResponseModel.myCurrentOffer(user_id);
+        if (offer === "") {
+            return res.json({
+                message: "Do not have active any offer"
+            });
+        }
+        return res.json({
+            message: "Get my current offer",
+            data: offer,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+
+const completeTask = async (req, res) => {
+    const offer_id = req.params.id;
+    try {
+        await TaskResponseModel.completeTask(offer_id);
         return res.json({
             message: "Update task request status success",
-            data: updatedRequest,
+            offer_id
         });
     } catch (error) {
         return res.status(500).json({
@@ -106,23 +154,23 @@ const updateTaskRequestStatus = async (req, res) => {
     }
 };
 
-const deleteTaskRequestById = async (req, res) => {
-    const requestId = req.params.id;
+const cancelOffer = async (req, res) => {
+    const offer_id = req.params.id;
     try {
-        const deletedRequest = await TaskResponseModel.deleteTaskRequestById(
-            requestId
-        );
-        if (!deletedRequest) {
+        const cancelledRequest = await TaskResponseModel.cancelOffer(offer_id);
+
+        if (!cancelledRequest) {
             return res.status(404).json({
                 message: "Task request not found",
                 data: null,
             });
         }
+
         return res.json({
-            message: "Delete task request success",
-            data: deletedRequest,
+            message: "Cancel offer success",
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             serverMessage: error,
@@ -133,7 +181,9 @@ const deleteTaskRequestById = async (req, res) => {
 module.exports = {
     createOffering,
     getAllNearTasks,
+    cancelOffer,
+    getMyOffer,
+    getAllMyOffer,
     getTaskRequestsByTaskId,
-    updateTaskRequestStatus,
-    deleteTaskRequestById,
+    completeTask,
 };

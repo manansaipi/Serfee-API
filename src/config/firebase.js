@@ -6,12 +6,12 @@ const serviceAccount = require("../../credentials/firebase.json"); // credential
 
 admin.initializeApp({ // init
     credential: admin.credential.cert(serviceAccount), // credentials
-    databaseURL: "https://serfee-project-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    databaseURL: process.env.FIREBASE_DB_URL
 });
 firebase.initializeApp({
-    apiKey: "AIzaSyAwxOLHJ4xiz6DV001VyDu2RQYCVHqmux8",
-    authDomain: "https://accounts.google.com/o/oauth2/auth",
-    projectId: "serfee-project",
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
 });
 
 module.exports = {

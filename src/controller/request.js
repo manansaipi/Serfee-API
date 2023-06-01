@@ -90,7 +90,7 @@ const getAllMyTasks = async (req, res) => {
     }
 };
 
-const getTaskById = async (req, res) => {
+const getMyTask = async (req, res) => {
     const firebase_uid = req.user.uid;
     try {
         // get user_id in db sql
@@ -122,7 +122,7 @@ const updateTaskById = async (req, res) => {
         }
         return res.json({
             message: "Update task success",
-            data: updatedTask,
+            body
         });
     } catch (error) {
         return res.status(500).json({
@@ -132,19 +132,21 @@ const updateTaskById = async (req, res) => {
     }
 };
 
-const deleteTaskById = async (req, res) => {
-    const taskId = req.params.id;
+const cancelMyTask = async (req, res) => {
+    const requestId = req.params.id;
     try {
-        const deletedTask = await TaskRequestModel.deleteTaskById(taskId);
-        if (!deletedTask) {
+        const cancelledRequest = await TaskRequestModel.cancelMyTask(requestId);
+
+        if (!cancelledRequest) {
             return res.status(404).json({
-                message: "Task not found",
+                message: "Task request not found",
                 data: null,
             });
         }
+
         return res.json({
-            message: "Delete task success",
-            data: deletedTask,
+            message: "Cancel my task success",
+            requestId
         });
     } catch (error) {
         return res.status(500).json({
@@ -154,6 +156,7 @@ const deleteTaskById = async (req, res) => {
     }
 };
 
+// should add notification when got response or after tasker create an offering
 const getResponseProfile = async (req, res) => {
     const { body } = req;
     // const tasker_id = body.tasker_id;
@@ -164,6 +167,35 @@ const getResponseProfile = async (req, res) => {
         return res.json({
             message: "Get response",
             tasker_profile,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+// when user accept/reject tasker. update status
+const response = async (req, res) => {
+    const request_id = req.body.request_id;
+    const offer_id = req.body.offer_id;
+    // response would be Accept or Reject
+    const respon = req.body.response;
+    try {
+        if (respon === "Accept") {
+            console.log(respon);
+            await TaskRequestModel.acceptOffer(request_id, offer_id);
+            return res.json({
+                message: "Accept task request success",
+                request_id
+            });
+            // if not accept(reject)
+        } 
+        await TaskRequestModel.rejectOffer(request_id, offer_id);
+        return res.json({
+            message: "Reject task request success",
+            request_id
         });
     } catch (error) {
         console.log(error);
@@ -195,9 +227,10 @@ module.exports = {
     createTask,
     uploadTaskImage,
     getAllMyTasks,
-    getTaskById,
+    getMyTask,
     updateTaskById,
-    deleteTaskById,
+    cancelMyTask,
     getResponseProfile,
+    response,
     seacrhTasks,
 };
