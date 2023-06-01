@@ -1,15 +1,5 @@
 const dbPool = require("../config/mysql");
 
-const getAllMyTasks = (user_id) => {
-    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}'`;
-    return dbPool.execute(SQLQuery);
-};
-
-const myCurrentTask = (user_id) => {
-    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Active"`;
-    return dbPool.execute(SQLQuery);
-};
-
 const createTask = (user_id, body, image_url) => {
     const {
         title, category_id, description, latitude, longtitude
@@ -18,16 +8,37 @@ const createTask = (user_id, body, image_url) => {
     return dbPool.execute(SQLQuery);
 };  
 
-const updateTaskById = (taskId, taskData) => {
-    const {
-        taskName, description, customerId, latitude, longitude 
-    } = taskData;
-    const SQLQuery = `UPDATE tasks SET task_name = '${taskName}', description = '${description}', customerId = '${customerId}', latitude = '${latitude}', longitude = '${longitude}' WHERE task_id = '${taskId}'`;
+const myCurrentTask = (user_id) => {
+    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Active" OR status = "In Progress"`;
     return dbPool.execute(SQLQuery);
 };
 
-const deleteTaskById = (taskId) => {
-    const SQLQuery = `DELETE FROM tasks WHERE task_id = '${taskId}'`;
+const getAllMyTasks = (user_id) => {
+    const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}'`;
+    return dbPool.execute(SQLQuery);
+};
+// when user accept/reject tasker. update status
+const acceptOffer = (request_id, offer_id) => {
+    const SQLQueryReq = `UPDATE Requests SET status = 'In Progress' WHERE request_id = '${request_id}'`;
+    const SQLQueryOffer = `UPDATE Offers SET status = 'In Progress' WHERE offer_id = '${offer_id}'`;
+    dbPool.execute(SQLQueryReq);
+    return dbPool.execute(SQLQueryOffer);
+};
+const rejectOffer = (request_id, offer_id) => {
+    const SQLQueryReq = `UPDATE Requests SET status = 'Active' WHERE request_id = '${request_id}'`;
+    const SQLQueryOffer = `UPDATE Offers SET status = 'Rejected' WHERE offer_id = '${offer_id}'`;
+    dbPool.execute(SQLQueryReq);
+    return dbPool.execute(SQLQueryOffer);
+};
+
+const updateTaskById = (taskId, body) => {
+    const { title, category_id, description } = body;
+    const SQLQuery = `UPDATE Requests SET title = '${title}', category_id = '${category_id}', description = '${description}' WHERE request_id = '${taskId}'`;
+    return dbPool.execute(SQLQuery);
+};
+
+const cancelMyTask = (request_id) => {
+    const SQLQuery = `UPDATE Requests SET status = 'Canceled' WHERE request_id = '${request_id}'`;
     return dbPool.execute(SQLQuery);
 };
 
@@ -43,11 +54,13 @@ const serchTasks = (keyword) => {
     return dbPool.execute(SQLQuery);
 };
 module.exports = {
-    getAllMyTasks,
-    myCurrentTask,
     createTask,
+    myCurrentTask,
+    getAllMyTasks,   
+    acceptOffer,
+    rejectOffer,
     updateTaskById,
-    deleteTaskById,
+    cancelMyTask,
     getResponseProfile,
     serchTasks,
 };

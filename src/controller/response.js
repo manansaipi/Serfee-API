@@ -7,9 +7,8 @@ const UsersModel = require("../models/users");
 const createOffering = async (req, res) => {
     // get firebase_uid from access token to get user id in table sql
     const firebase_uid = req.user.uid;
-    const { body } = req;
-    const message = body.message;
-    const request_id = body.request_id;
+    const message = req.body.message;
+    const request_id = req.body.request_id;
     try {
     // get user_id in table sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
@@ -18,11 +17,13 @@ const createOffering = async (req, res) => {
         await TaskResponseModel.createOffering(user_id, request_id, message);
         // triger notification to send to user mobile here
         return res.status(201).json({
-            message: "Create offering success",
+            messages: "Create offering success",
             tasker_id: user_id,
-            body,
+            message,
+            request_id
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             serverMessage: error,
@@ -31,12 +32,11 @@ const createOffering = async (req, res) => {
 };
 // Tasker
 const getAllNearTasks = async (req, res) => {
-    const { body } = req;
     // get tasker location latitude and longitude
-    const tasker_latitude = body.latitude;
-    const tasker_longitude = body.longitude;
+    const tasker_latitude = req.body.latitude;
+    const tasker_longitude = req.body.longitude;
     // radius (filter) in km
-    const radius = body.radius;
+    const radius = req.body.radius;
     try {
         const [tasks] = await TaskResponseModel.getAllNearTasks(
             tasker_latitude,
@@ -90,23 +90,21 @@ const getTaskRequestsByTaskId = async (req, res) => {
     }
 };
 
-const updateTaskRequestStatus = async (req, res) => {
-    const requestId = req.params.id;
-    const { body } = req;
+const getAllMyOffer = async (req, res) => {
+    const firebase_uid = req.user.uid;
     try {
-        const updatedRequest = await TaskResponseModel.updateTaskRequestStatus(
-            requestId,
-            body.status
-        );
-        if (!updatedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [offers] = await TaskResponseModel.getAllMyOffer(user_id);
+        if (offers === "") {
+            return res.json({
+                message: "Do not have any offering yet"
             });
         }
         return res.json({
-            message: "Update task request status success",
-            data: updatedRequest,
+            message: "GET all my recent offer",
+            data: offers
         });
     } catch (error) {
         return res.status(500).json({
@@ -116,21 +114,37 @@ const updateTaskRequestStatus = async (req, res) => {
     }
 };
 
-const deleteTaskRequestById = async (req, res) => {
-    const requestId = req.params.id;
+const getMyOffer = async (req, res) => {
+    const firebase_uid = req.user.uid;
     try {
-        const deletedRequest = await TaskResponseModel.deleteTaskRequestById(
-            requestId
-        );
-        if (!deletedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        const [offer] = await TaskResponseModel.myCurrentOffer(user_id);
+        if (offer === "") {
+            return res.json({
+                message: "Do not have active any offer"
             });
         }
         return res.json({
-            message: "Delete task request success",
-            data: deletedRequest,
+            message: "Get my current offer",
+            data: offer,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error",
+            serverMessage: error,
+        });
+    }
+};
+
+const completeTask = async (req, res) => {
+    const offer_id = req.params.id;
+    try {
+        await TaskResponseModel.completeTask(offer_id);
+        return res.json({
+            message: "Update task request status success",
+            offer_id
         });
     } catch (error) {
         return res.status(500).json({
@@ -141,10 +155,9 @@ const deleteTaskRequestById = async (req, res) => {
 };
 
 const cancelOffer = async (req, res) => {
-    const requestId = req.params.id;
-
+    const offer_id = req.params.id;
     try {
-        const cancelledRequest = await TaskResponseModel.cancelOffer(requestId);
+        const cancelledRequest = await TaskResponseModel.cancelOffer(offer_id);
 
         if (!cancelledRequest) {
             return res.status(404).json({
@@ -154,35 +167,10 @@ const cancelOffer = async (req, res) => {
         }
 
         return res.json({
-            message: "Cancel task request success",
-            data: cancelledRequest,
+            message: "Cancel offer success",
         });
     } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            serverMessage: error,
-        });
-    }
-};
-
-const acceptOffer = async (req, res) => {
-    const requestId = req.params.id;
-
-    try {
-        const acceptedRequest = await TaskResponseModel.acceptOffer(requestId);
-
-        if (!acceptedRequest) {
-            return res.status(404).json({
-                message: "Task request not found",
-                data: null,
-            });
-        }
-
-        return res.json({
-            message: "Accept task request success",
-            data: acceptedRequest,
-        });
-    } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             serverMessage: error,
@@ -194,8 +182,8 @@ module.exports = {
     createOffering,
     getAllNearTasks,
     cancelOffer,
-    acceptOffer,
+    getMyOffer,
+    getAllMyOffer,
     getTaskRequestsByTaskId,
-    updateTaskRequestStatus,
-    deleteTaskRequestById,
+    completeTask,
 };
