@@ -8,7 +8,7 @@ const config = require("../config/firebase");
 */
 const authenticate = async (req, res, next) => {
     const authorizationHeader = req.headers.authorization || req.headers.Authorization; // Get the Authorization header
-    const bearerToken = authorizationHeader.split(' ')[1]; // Split the header by space and take the second part
+    const bearerToken = authorizationHeader.split(" ")[1]; // Split the header by space and take the second part
     const idToken = bearerToken; // Assign the extracted token to the idToken variable
     try {
         const decodeToken = await config.admin.auth().verifyIdToken(idToken);

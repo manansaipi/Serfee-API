@@ -55,7 +55,7 @@ const serchTasks = (keyword) => {
 };
 
 const getCategory = () => {
-    const SQLQuery = `SELECT * FROM Categories`;
+    const SQLQuery = "SELECT * FROM Categories";
     return dbPool.execute(SQLQuery);
 };
 module.exports = {

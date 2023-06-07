@@ -6,19 +6,19 @@ const UsersModel = require("../models/users");
 
 const getAllTask = async (req, res) => {
     try {
-        const listStory = TaskResponseModel.getAllTask()
+        const listStory = TaskResponseModel.getAllTask();
         res.json({
             message: "get all task",
             listStory
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "server serror",
             error
-        })  
+        });  
     }
-}
+};
 
 const createOffering = async (req, res) => {
     // get firebase_uid from access token to get user id in table sql

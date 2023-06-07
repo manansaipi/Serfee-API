@@ -231,15 +231,15 @@ const getCaetegory = async (req, res) => {
         res.json({
             message: "get category",
             category
-        })
+        });
     } catch (error) {
         console.log(error);
         res.send.status(500).json({
             message: "server Error",
             serverMessage: error
-        })
+        });
     }
-}
+};
 
 module.exports = {
     createTask,
