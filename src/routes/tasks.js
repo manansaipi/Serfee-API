@@ -43,4 +43,8 @@ router.patch("/response/complete/:id", Middleware.authenticate, TaskResponseCont
 // search task
 router.get("/search", TaskRequestController.seacrhTasks);
 
+router.get("/category", TaskRequestController.getCaetegory);
+
+router.get("/", TaskResponseController.getAllTask);
+
 module.exports = router;
