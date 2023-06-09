@@ -4,6 +4,22 @@ const geolib = require("geolib");
 const TaskResponseModel = require("../models/response");
 const UsersModel = require("../models/users");
 
+const getAllTask = async (req, res) => {
+    try {
+        const [listStory] = await TaskResponseModel.getAllTask();
+        res.json({
+            message: "get all task",
+            listStory
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "server serror",
+            error
+        });  
+    }
+};
+
 const createOffering = async (req, res) => {
     // get firebase_uid from access token to get user id in table sql
     const firebase_uid = req.user.uid;
@@ -179,6 +195,7 @@ const cancelOffer = async (req, res) => {
 };
 
 module.exports = {
+    getAllTask,
     createOffering,
     getAllNearTasks,
     cancelOffer,

@@ -13,10 +13,20 @@ const login = async (req, res) => {
 
     try {
         // firebase auth using firebase core modules
-        const userRecord = await firebaseConfig.firebase.auth().signInWithEmailAndPassword(email, password);
+        const userCredential = await firebaseConfig.firebase.auth().signInWithEmailAndPassword(email, password);
+        const name = userCredential.user.displayName;
+        const userId = userCredential.user.uid;
+        const photoUrl = userCredential.user.photoUrl;
+        // Access the access token
+        const token = await userCredential.user.getIdToken();
         res.json({
             message: "success login",
-            userRecord
+            loginResult: {
+                userId,
+                name,
+                photoUrl,
+                token
+            }
         });
     } catch (error) {
         console.error(error);

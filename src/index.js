@@ -7,6 +7,7 @@ const usersRoutes = require("./routes/users");
 const firebaseAuth = require("./routes/auth");
 const tasksRoutes = require("./routes/tasks");
 const reviewsRoutes = require("./routes/reviews");
+const chatsRoutes = require("./routes/chats");
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.use("/auth", firebaseAuth);
 app.use("/tasks", tasksRoutes);
 
 app.use("/reviews", reviewsRoutes);
+
+app.use("/chats", chatsRoutes);
 
 app.use((err, req, res, next) => {
     // err handling

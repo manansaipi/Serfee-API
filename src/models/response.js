@@ -14,6 +14,14 @@ const getAllNearTasks = (tasker_latitude, tasker_longitude, radius) => {
     return dbPool.execute(SQLQuery);
 };
 
+const getAllTask = () => {
+    // get all near task from tasker location within 1km
+    const SQLQuery = `SELECT Requests.*, Users.full_name
+                  FROM Requests
+                  JOIN Users ON Requests.user_id = Users.user_id`;
+    return dbPool.execute(SQLQuery);
+};
+
 const getTaskRequestsByTaskId = (taskId) => {
     const SQLQuery = `SELECT * FROM Requests WHERE request_id = '${taskId}'`;
     return dbPool.execute(SQLQuery);
@@ -60,4 +68,5 @@ module.exports = {
     getAllMyOffer,
     completeTask,
     cancelOffer,
+    getAllTask
 };

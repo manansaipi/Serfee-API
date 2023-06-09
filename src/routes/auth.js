@@ -7,7 +7,7 @@ const Middleware = require("../middleware/firebase_auth");
 
 const router = express.Router();
 
-router.get("/login", authController.login);
+router.post("/login", authController.login);
 
 router.post("/register", authController.register);
 

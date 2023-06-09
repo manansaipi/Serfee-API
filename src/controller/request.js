@@ -36,7 +36,7 @@ const uploadTaskImage = async (file) => {
             }
         });
         // if success Get the public URL to access the task image
-        const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}}`;
+        const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`;
         return publicUrl;
     } catch (error) {
         return error;
@@ -57,6 +57,7 @@ const createTask = async (req, res) => {
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
         await TaskRequestModel.createTask(user_id, body, image_url);
+
         return res.status(201).json({
             message: "Create new task success",
             creator_id: user_id,
@@ -64,6 +65,7 @@ const createTask = async (req, res) => {
             image_url
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Server Error",
             error,
@@ -223,6 +225,22 @@ const seacrhTasks = async (req, res) => {
     }
 };
 
+const getCaetegory = async (req, res) => {
+    try {
+        const [category] = await TaskRequestModel.getCategory();
+        res.json({
+            message: "get category",
+            category
+        });
+    } catch (error) {
+        console.log(error);
+        res.send.status(500).json({
+            message: "server Error",
+            serverMessage: error
+        });
+    }
+};
+
 module.exports = {
     createTask,
     uploadTaskImage,
@@ -233,4 +251,5 @@ module.exports = {
     getResponseProfile,
     response,
     seacrhTasks,
+    getCaetegory
 };
