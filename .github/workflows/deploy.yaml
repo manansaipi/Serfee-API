@@ -27,9 +27,7 @@ jobs:
       - name: Authenticate with Google Cloud
         env:
           PRIVATE_KEY: ${{ secrets.APPLICATION_CREDENTIALS }}
-        run: |
-          echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
-          gcloud components update --quiet
+        run: echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
 
       - name: Install dependencies
         run: npm ci
