@@ -30,7 +30,6 @@ jobs:
       - name: Deploy to App Engine
         run: |
           echo "$ENV_FILE" > .env
-          gcloud auth activate-service-account --key-file=service-account.json
           gcloud app deploy --quiet app.yaml
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
