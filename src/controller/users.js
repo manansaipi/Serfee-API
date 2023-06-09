@@ -27,7 +27,7 @@ const getUserById = async (req, res) => {
         const [data] = await UsersModel.getUser(firebase_uid); // excecute query
         res.json({
             message: "Get user success",
-            data
+            data 
         });
     } catch (error) {
         res.status(500).json({
