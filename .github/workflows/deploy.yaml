@@ -30,7 +30,7 @@ jobs:
         run: echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
 
       - name: Create App Engine application
-        run: gcloud app create --quiet --region=us-central
+        run: gcloud app create --quiet
 
       - name: Install dependencies
         run: npm ci
