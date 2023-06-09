@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.static("public/images"));
 
 app.get("/", (req, res) => {
-    res.send({ message: "connection success, test deploy" });
+    res.send({ message: "connection success, test deploy " });
 });
 
 app.use("/users", usersRoutes); // Grouping path users in users.js file
