@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 15
+          node-version: 16
 
       - name: Cache Google Cloud SDK
         uses: actions/cache@v2
@@ -28,6 +28,9 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.APPLICATION_CREDENTIALS }}
         run: echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
+
+      - name: Create App Engine application
+        run: gcloud app create --quiet --region=us-central
 
       - name: Install dependencies
         run: npm ci
