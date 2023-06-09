@@ -3,7 +3,7 @@ name: Deploy to App Engine
 on:
   push:
     branches:
-      - firebase-auth
+      - firebase-auth # Change this to your main branch name
 
 jobs:
   deploy:
@@ -16,21 +16,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16
-
-      - name: Cache Google Cloud SDK
-        uses: actions/cache@v2
-        with:
-          path: ${{ runner.workspace }}/google-cloud-sdk
-          key: ${{ runner.os }}-gcloud-${{ hashFiles('**/google-cloud-sdk/VERSION') }}
-
-      - name: Authenticate with Google Cloud
-        env:
-          PRIVATE_KEY: ${{ secrets.APPLICATION_CREDENTIALS }}
-        run: echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
+          node-version: 16 # Change this to your desired Node.js version
 
       - name: Install dependencies
         run: npm ci
 
       - name: Deploy to App Engine
-        run: gcloud app deploy --quiet app.yaml
+        run: gcloud app deploy --quiet
+        env:
+          GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
+          APPLICATION_CREDENTIALS: ${{ secrets.APPLICATION_CREDENTIALS }}
