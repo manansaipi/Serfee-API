@@ -27,10 +27,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Retrieve environment variables
-        env:
-          DOTENV_PATH: ${{ secrets.DOTENV_PATH }}
-        run: cp $DOTENV_PATH .env
-
       - name: Deploy to App Engine
-        run: gcloud app deploy --quiet app.yaml
+        run: dotenv -e .env gcloud app deploy --quiet app.yaml
