@@ -25,9 +25,10 @@ jobs:
           key: ${{ runner.os }}-gcloud-${{ hashFiles('**/google-cloud-sdk/VERSION') }}
 
       - name: Authenticate with Google Cloud
+        env:
+          PRIVATE_KEY: ${{ secrets.APPLICATION_CREDENTIALS }}
         run: |
-          echo "${{ secrets.APPLICATION_CREDENTIALS }}" > key.json
-          gcloud auth activate-service-account --key-file=key.json --project ${{ secrets.GCLOUD_PROJECT }}
+          echo "$PRIVATE_KEY" | gcloud auth activate-service-account --key-file=- --project ${{ secrets.GCLOUD_PROJECT }}
           gcloud components update --quiet
 
       - name: Install dependencies
