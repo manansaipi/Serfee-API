@@ -26,7 +26,7 @@ jobs:
 
       - name: Authenticate with Google Cloud
         run: |
-          echo "${{ secrets.APPLICATION_CREDENTIALS }}" | base64 --decode > key.json
+          echo "${{ secrets.APPLICATION_CREDENTIALS }}" > key.json
           gcloud auth activate-service-account --key-file=key.json --project ${{ secrets.GCLOUD_PROJECT }}
           gcloud components update --quiet
 
