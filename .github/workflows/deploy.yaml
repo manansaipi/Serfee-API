@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 15
 
-      - name: Install Google Cloud SDK
-        run: |
-          curl https://sdk.cloud.google.com | bash > /dev/null
-          exec -l $SHELL
-          echo "$HOME/google-cloud-sdk/path.bash.inc" >> $GITHUB_ENV
+      - name: Cache Google Cloud SDK
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.workspace }}/google-cloud-sdk
+          key: ${{ runner.os }}-gcloud-${{ hashFiles('**/google-cloud-sdk/VERSION') }}
 
       - name: Authenticate with Google Cloud
         run: |
