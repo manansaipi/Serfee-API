@@ -6,7 +6,7 @@ const UsersModel = require("../models/users");
 
 const getAllTask = async (req, res) => {
     try {
-        const listStory = TaskResponseModel.getAllTask();
+        const [listStory] = await TaskResponseModel.getAllTask();
         res.json({
             message: "get all task",
             listStory
