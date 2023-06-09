@@ -45,7 +45,7 @@ app.use("/", (req, res) => {
     res.sendStatus(404);
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 dns.lookup(require("os").hostname(), async (err, address) => {
     if (err) {
         console.error(err);
