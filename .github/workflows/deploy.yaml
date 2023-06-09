@@ -1,0 +1,36 @@
+name: Deploy to App Engine
+
+on:
+  push:
+    branches:
+      - firebase-auth # Change this to your main branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16 # Change this to your desired Node.js version
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/setup-gcloud@v0.5.1
+        with:
+          project_id: ${{ secrets.GCLOUD_PROJECT }}
+          service_account_key: ${{ secrets.APPLICATION_CREDENTIALS }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy to App Engine
+        run: |
+          echo "$ENV_FILE" > .env
+          gcloud app deploy --quiet app.yaml
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+          CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
