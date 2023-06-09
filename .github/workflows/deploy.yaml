@@ -16,10 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 15
+          node-version: 16
 
       - name: Authenticate with Google Cloud
-        run: gcloud auth login
+        run: echo "${{ secrets.APPLICATION_CREDENTIALS }}" > /tmp/keyfile.json && gcloud auth activate-service-account --key-file=/tmp/keyfile.json
 
       - name: Install dependencies
         run: npm ci
@@ -28,4 +28,3 @@ jobs:
         run: gcloud app deploy --quiet
         env:
           GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
-          APPLICATION_CREDENTIALS: ${{ secrets.APPLICATION_CREDENTIALS }}
