@@ -39,7 +39,7 @@ const uploadTaskImage = async (file) => {
         const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`;
         return publicUrl;
     } catch (error) {
-        return error;
+        throw error;
     }
 };
 

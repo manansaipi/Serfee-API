@@ -2,7 +2,7 @@ const dbPool = require("../config/mysql");
 
 const createTask = (user_id, body, image_url) => {
     const {
-        title, category_id = 1, description, lat, lon
+        title, category_id, description, lat, lon
     } = body;
     const SQLQuery = `INSERT INTO Requests ( user_id, title, category_id, description, location_latitude, location_longitude, image_url, created_at) VALUES ('${user_id}', '${title}' ,'${category_id}', '${description}', '${lat}', '${lon}','${image_url}', NOW() )`;
     return dbPool.execute(SQLQuery);
