@@ -10,37 +10,33 @@ const uploadTaskImage = async (file) => {
     const destination = `images/task/${file.filename}`; // path to save in the bucket and the file name
     const fileObject = cloudStorageConfig.bucket.file(destination);
     const filePath = `./public/images/${file.filename}`; // path to acces images in local
-    
-    try {
-        const options = {
-            metadata: {
-                contentType: file.mimetype,
-            },
-            predefinedAcl: "publicRead", // set public access control in Cloud SQL
-        };
+
+    const options = {
+        metadata: {
+            contentType: file.mimetype,
+        },
+        predefinedAcl: "publicRead", // set public access control in Cloud SQL
+    };
         // store photo to Cloud SQL
-        await new Promise((resolve, reject) => {
-            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
-            const writeStream = fileObject.createWriteStream(options);
+    await new Promise((resolve, reject) => {
+        const readStream = fs.createReadStream(`./public/images/${file.filename}`);
+        const writeStream = fileObject.createWriteStream(options);
 
-            readStream.on("error", reject);
-            writeStream.on("error", reject);
-            writeStream.on("finish", resolve);
+        readStream.on("error", reject);
+        writeStream.on("error", reject);
+        writeStream.on("finish", resolve);
 
-            readStream.pipe(writeStream);
-        });
-        // delete file in public/images directory after upload to Cloud SQL
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error(`Failed to delete file: ${err}`);
-            }
-        });
-        // if success Get the public URL to access the task image
-        const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`;
-        return publicUrl;
-    } catch (error) {
-        throw error;
-    }
+        readStream.pipe(writeStream);
+    });
+    // delete file in public/images directory after upload to Cloud SQL
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error(`Failed to delete file: ${err}`);
+        }
+    });
+    // if success Get the public URL to access the task image
+    const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`;
+    return publicUrl;
 };
 
 const createTask = async (req, res) => {
@@ -48,21 +44,29 @@ const createTask = async (req, res) => {
     const firebase_uid = req.user.uid; 
     const { body } = req;
     let image_url; // define var to asign image_url if any
-    if (req.file != null) { // if the request contain a file then upload image to cloud storage
-        const file = req.file; // get file in body->form-data
-        image_url = await uploadTaskImage(file); // take the umage_url
-    }
-    // get user_id in db sql
-    const [data] = await UsersModel.getUser_id(firebase_uid);
-    const user_id = (data[0].user_id);
-    await TaskRequestModel.createTask(user_id, body, image_url);
+    try {
+        if (req.file != null) { // if the request contain a file then upload image to cloud storage
+            const file = req.file; // get file in body->form-data
+            image_url = await uploadTaskImage(file); // take the umage_url
+        }
+        // get user_id in db sql
+        const [data] = await UsersModel.getUser_id(firebase_uid);
+        const user_id = (data[0].user_id);
+        await TaskRequestModel.createTask(user_id, body, image_url);
 
-    return res.status(201).json({
-        message: "Create new task success",
-        creator_id: user_id,
-        data: body,
-        image_url
-    });
+        return res.status(201).json({
+            message: "Create new task success",
+            creator_id: user_id,
+            data: body,
+            image_url
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Server Error",
+            error,
+        });
+    }
 };
 
 const getAllMyTasks = async (req, res) => {
