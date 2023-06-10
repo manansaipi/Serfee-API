@@ -30,7 +30,11 @@ jobs:
       - name: Deploy to App Engine
         run: |
           echo "$ENV_FILE" > .env
+          echo "$CLOUD_STORAGE_CONFIG" > credentials/cloud-storage.json
+          echo "$FIREBASE_CONFIG" > credentials/firebase.json
           gcloud app deploy --quiet app.yaml
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
+          CLOUD_STORAGE_CONFIG: ${{ secrets.CLOUD_STORAGE_CONFIG }}
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
           CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
