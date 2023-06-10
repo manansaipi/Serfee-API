@@ -16,6 +16,7 @@ const login = async (req, res) => {
         const userCredential = await firebaseConfig.firebase.auth().signInWithEmailAndPassword(email, password);
         const name = userCredential.user.displayName;
         const userId = userCredential.user.uid;
+        const photoUrl = userCredential.user.photoUrl;
         // Access the access token
         const token = await userCredential.user.getIdToken();
         res.json({
@@ -23,6 +24,7 @@ const login = async (req, res) => {
             loginResult: {
                 userId,
                 name,
+                photoUrl,
                 token
             }
         });
