@@ -1,12 +1,17 @@
 const dbPool = require("../config/mysql");
 
-const createTask = (user_id, body, image_url) => {
+const createTask = (user_id, body, image_url, category_id) => {
     const {
-        title, category_id, description, lat, lon
+        title, description, lat, lon
     } = body;
     const SQLQuery = `INSERT INTO Requests ( user_id, title, category_id, description, location_latitude, location_longitude, image_url, created_at) VALUES ('${user_id}', '${title}' ,'${category_id}', '${description}', '${lat}', '${lon}','${image_url}', NOW() )`;
     return dbPool.execute(SQLQuery);
 };  
+
+const getCatId = (category) => {
+    const SQLQuery = `SELECT category_id FROM Categories WHERE category_name = '${category}'`;
+    return dbPool.execute(SQLQuery);
+};
 
 const myCurrentTask = (user_id) => {
     const SQLQuery = `SELECT * FROM Requests WHERE user_id = '${user_id}' AND status = "Active" OR status = "In Progress"`;
@@ -60,6 +65,7 @@ const getCategory = () => {
 };
 module.exports = {
     createTask,
+    getCatId,
     myCurrentTask,
     getAllMyTasks,   
     acceptOffer,

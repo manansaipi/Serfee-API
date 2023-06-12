@@ -2,11 +2,15 @@
 const geolib = require("geolib");
 
 const TaskResponseModel = require("../models/response");
+const TaskRequestModel = require("../models/request");
 const UsersModel = require("../models/users");
 
 const getAllTask = async (req, res) => {
+    const category = req.body.category;
     try {
-        const [listStory] = await TaskResponseModel.getAllTask();
+        const [cat] = await TaskRequestModel.getCatId(category);
+        const category_id = (cat[0].category_id);
+        const [listStory] = await TaskResponseModel.getAllTask(category_id);
         res.json({
             message: "get all task",
             listStory

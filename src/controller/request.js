@@ -43,17 +43,20 @@ const createTask = async (req, res) => {
     // get firebase_uid from authMiddleware using authorization access token to get user information in db sql 
     const firebase_uid = req.user.uid; 
     const { body } = req;
+    const category = body.category;
     let image_url; // define var to asign image_url if any
     try {
         if (req.file != null) { // if the request contain a file then upload image to cloud storage
             const file = req.file; // get file in body->form-data
             image_url = await uploadTaskImage(file); // take the umage_url
         }
+        const [cat] = await TaskRequestModel.getCatId(category);
+        const category_id = (cat[0].category_id);
         // get user_id in db sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
-        await TaskRequestModel.createTask(user_id, body, image_url);
-
+        await TaskRequestModel.createTask(user_id, body, image_url, category_id);
+        console.log(category_id);
         return res.status(201).json({
             message: "Create new task success",
             creator_id: user_id,
