@@ -14,7 +14,7 @@ const getAllNearTasks = (tasker_latitude, tasker_longitude, radius) => {
     return dbPool.execute(SQLQuery);
 };
 
-const getAllTask = (category_id) => {
+const getAllTask = () => {
     // get all near task from tasker location within 1km
     const SQLQuery = `SELECT Requests.*, Users.full_name
                   FROM Requests

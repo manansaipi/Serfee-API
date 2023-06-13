@@ -25,7 +25,6 @@ const getAllTask = async (req, res) => {
             message: "get all task",
             listStory
         });
-        
     } catch (error) {
         console.log(error);
         res.status(500).json({
