@@ -18,6 +18,14 @@ const getAllTask = (category_id) => {
     // get all near task from tasker location within 1km
     const SQLQuery = `SELECT Requests.*, Users.full_name
                   FROM Requests
+                  JOIN Users ON Requests.user_id = Users.user_id`;
+    return dbPool.execute(SQLQuery);
+};
+
+const getTaskBasedOnCat = (category_id) => {
+    // get all near task from tasker location within 1km
+    const SQLQuery = `SELECT Requests.*, Users.full_name
+                  FROM Requests
                   JOIN Users ON Requests.user_id = Users.user_id where category_id = '${category_id}'`;
     return dbPool.execute(SQLQuery);
 };
@@ -68,5 +76,6 @@ module.exports = {
     getAllMyOffer,
     completeTask,
     cancelOffer,
-    getAllTask
+    getAllTask,
+    getTaskBasedOnCat
 };

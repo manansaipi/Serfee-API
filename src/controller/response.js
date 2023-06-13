@@ -8,13 +8,24 @@ const UsersModel = require("../models/users");
 const getAllTask = async (req, res) => {
     const category = req.body.category;
     try {
-        const [cat] = await TaskRequestModel.getCatId(category);
-        const category_id = (cat[0].category_id);
-        const [listStory] = await TaskResponseModel.getAllTask(category_id);
+        if (category) {
+            const [cat] = await TaskRequestModel.getCatId(category);
+            console.log(category);
+            const category_id = (cat[0].category_id);
+            const [listStory] = await TaskResponseModel.getTaskBasedOnCat(category_id);
+            console.log("get task by category");
+            res.json({
+                message: "get all task based on category",
+                listStory
+            });
+        }
+        const [listStory] = await TaskResponseModel.getAllTask();
+        console.log("get all tasks");
         res.json({
             message: "get all task",
             listStory
         });
+        
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -98,6 +109,7 @@ const getTaskRequestsByTaskId = async (req, res) => {
     const taskId = req.params.id;
     try {
         const [data] = await TaskResponseModel.getTaskRequestsByTaskId(taskId);
+        console.log("get Task by id");
         return res.json({
             message: "GET task requests by task ID",
             data
