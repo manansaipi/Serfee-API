@@ -19,6 +19,7 @@ const login = async (req, res) => {
         const photoUrl = userCredential.user.photoUrl;
         // Access the access token
         const token = await userCredential.user.getIdToken();
+        console.log("log in");
         res.json({
             message: "success login",
             loginResult: {

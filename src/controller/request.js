@@ -56,9 +56,9 @@ const createTask = async (req, res) => {
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
         await TaskRequestModel.createTask(user_id, body, image_url, category_id);
-        console.log(category_id);
+        console.log("create task!");
         return res.status(201).json({
-            message: "Create new task success",
+            messatt: "Create new task success",
             creator_id: user_id,
             data: body,
             image_url
