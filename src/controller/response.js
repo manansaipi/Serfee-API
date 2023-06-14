@@ -40,7 +40,7 @@ const createOffering = async (req, res) => {
     const message = req.body.message;
     const request_id = req.body.request_id;
     try {
-    // get user_id in table sql
+        // get user_id in table sql
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = data[0].user_id;
         // create an offering as a tasker
