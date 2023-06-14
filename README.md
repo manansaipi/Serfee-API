@@ -1,6 +1,7 @@
 # Serfee API
 
-This is a backend API using Node.js and Express. The API seamlessly integrates with Google Cloud Platform (GCP) services, including Cloud SQL and Cloud Storage. It enables efficient data storage and management.
+This is a backend API for Serfee Application using Node.js and Express Deployed on App Engine. The API seamlessly integrates with Google Cloud Platform (GCP) services, including Cloud SQL and Cloud Storage.
+You can Access the API Endpoint link on https://serfee-project.as.r.appspot.com/users
 
 ## Installation & Environment Variables
 
@@ -114,11 +115,11 @@ This app utilizes CI/CD pipelines using GitHub Actions to automate deployment to
 
   - `ENV_FILE`: Contents of your .env file
 
-  - `CLOUD_STORAGE_CONFIG`: Contents related to your Cloud Storage configuration
+  - `CLOUD_STORAGE_CONFIG`: Contents related to your Cloud Storage service account key JSON file
 
-  - `FIREBASE_CONFIG`: Contents related to your Firebase configuration
+  - `FIREBASE_CONFIG`: Contents related to your Firebase service account key JSON file
 
-- Push your code changes to the `main` branch. and it will automate deploment process into App Engine in GCP
+- Push your code changes to the `main` branch and it will automate deployment process into App Engine in GCP
 
 ## Documentation
 
