@@ -53,12 +53,14 @@ const createTask = async (req, res) => {
         const [cat] = await TaskRequestModel.getCatId(category);
         const category_id = (cat[0].category_id);
         // get user_id in db sql
+        console.log(category);
         const [data] = await UsersModel.getUser_id(firebase_uid);
         const user_id = (data[0].user_id);
         await TaskRequestModel.createTask(user_id, body, image_url, category_id);
+        // console.log(body);
         console.log("create task!");
         return res.status(201).json({
-            messatt: "Create new task success",
+            message: "Create new task success",
             creator_id: user_id,
             data: body,
             image_url

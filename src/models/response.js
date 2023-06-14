@@ -18,7 +18,7 @@ const getAllTask = () => {
     // get all near task from tasker location within 1km
     const SQLQuery = `SELECT Requests.*, Users.full_name
                   FROM Requests
-                  JOIN Users ON Requests.user_id = Users.user_id`;
+                  JOIN Users ON Requests.user_id = Users.user_id ORDER BY created_at DESC LIMIT 10`;
     return dbPool.execute(SQLQuery);
 };
 

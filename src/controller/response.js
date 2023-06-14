@@ -46,6 +46,7 @@ const createOffering = async (req, res) => {
         // create an offering as a tasker
         await TaskResponseModel.createOffering(user_id, request_id, message);
         // triger notification to send to user mobile here
+        console.log("create offer");
         return res.status(201).json({
             messages: "Create offering success",
             tasker_id: user_id,

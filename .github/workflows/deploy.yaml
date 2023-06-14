@@ -3,7 +3,7 @@ name: Deploy to App Engine
 on:
   push:
     branches:
-      - main # Change this to your main branch name
+      - main
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16 # Change this to your desired Node.js version
+          node-version: 16
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/setup-gcloud@v0.5.1
