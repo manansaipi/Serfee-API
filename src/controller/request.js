@@ -1,15 +1,12 @@
-// Import dependencies
-const fs = require("fs");
-
 const TaskRequestModel = require("../models/request");
 const UsersModel = require("../models/users");
 const cloudStorageConfig = require("../config/cloud-storage");
 
 // This function will upload task image to Cloud Storage
 const uploadTaskImage = async (file) => {
-    const destination = `images/task/${file.filename}`; // path to save in the bucket and the file name
+    const timestamp = Date.now();
+    const destination = `images/task/${timestamp}`; // path to save in the bucket and the file name
     const fileObject = cloudStorageConfig.bucket.file(destination);
-    const filePath = `./public/images/${file.filename}`; // path to acces images in local
 
     const options = {
         metadata: {
@@ -19,20 +16,12 @@ const uploadTaskImage = async (file) => {
     };
         // store photo to Cloud SQL
     await new Promise((resolve, reject) => {
-        const readStream = fs.createReadStream(`./public/images/${file.filename}`);
         const writeStream = fileObject.createWriteStream(options);
 
-        readStream.on("error", reject);
         writeStream.on("error", reject);
         writeStream.on("finish", resolve);
 
-        readStream.pipe(writeStream);
-    });
-    // delete file in public/images directory after upload to Cloud SQL
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            console.error(`Failed to delete file: ${err}`);
-        }
+        writeStream.end(file.buffer);
     });
     // if success Get the public URL to access the task image
     const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`;

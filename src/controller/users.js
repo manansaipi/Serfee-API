@@ -1,6 +1,3 @@
-// Import dependencies
-const fs = require("fs");
-
 const UsersModel = require("../models/users");
 const firebaseConfig = require("../config/firebase");
 const cloudStorageConfig = require("../config/cloud-storage");
@@ -39,10 +36,9 @@ const getUserById = async (req, res) => {
 
 // This function will upload user photo to Cloud Storage
 const uploadUserPhoto = async (firebase_uid, file, email) => {
-    const destination = `images/profile/${email}/${file.filename}`; // path to save in the bucket and the file name
+    const timestamp = Date.now();
+    const destination = `images/profile/${email}/${timestamp}`; // path to save in the bucket and the file name
     const fileObject = cloudStorageConfig.bucket.file(destination);
-    const filePath = `./public/images/${file.filename}`; // path to acces images
-
     try {
         const options = {
             metadata: {
@@ -52,20 +48,12 @@ const uploadUserPhoto = async (firebase_uid, file, email) => {
         };
         // store photo to Cloud SQL
         await new Promise((resolve, reject) => {
-            const readStream = fs.createReadStream(`./public/images/${file.filename}`);
             const writeStream = fileObject.createWriteStream(options);
 
-            readStream.on("error", reject);
             writeStream.on("error", reject);
             writeStream.on("finish", resolve);
 
-            readStream.pipe(writeStream);
-        });
-        // do delete file  in public/images directory after upload to Cloud SQL
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error(`Failed to delete file: ${err}`);
-            }
+            writeStream.end(file.buffer);
         });
         //  if success Get the public URL
         const publicUrl = `https://storage.googleapis.com/${cloudStorageConfig.bucketName}/${destination}`; 
