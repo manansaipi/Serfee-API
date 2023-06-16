@@ -1,12 +1,13 @@
 # Serfee API
 
 This is a backend API for Serfee Application using Node.js and Express Deployed on App Engine. The API seamlessly integrates with Google Cloud Platform (GCP) services, including Cloud SQL and Cloud Storage.
-You can Access the API Endpoint link on https://serfee-project.as.r.appspot.com
+You can access the API Endpoint link at https://serfee-project.as.r.appspot.com
 
 ## Installation & Environment Variables
 
 > **_All operation methods require this step._**
-> To run this project, you will need to install the dependecies, create the configuration file called cloud-storage.json & firebase.json and add the following environment variables to your .env file
+
+To run this project, you will need to install the dependencies, create the configuration file called cloud-storage.json & firebase.json and add the following environment variables to your .env file
 
 #### Install dependencies
 
@@ -43,7 +44,7 @@ you need to create cloud-storage.json & firebase.json inside the credentials fol
 | Cloud Storage | `CS_PROJECT_ID` `CS_BUCKET_NAME`                                                  |
 | Firebase      | `FIREBASE_DB_URL` `FIREBASE_API_KEY` `FIREBASE_AUTH_DOMAIN` `FIREBASE_PROJECT_ID` |
 
-- `PORT`: Set the your server to listening to `PORT` you specify in here
+- `PORT`: Set your server to listening to `PORT` you specify in here
 - `DB_HOST`: set your Database IP Address
 - `DB_USERNAME`: set your database username
 - `DB_PASSWORD`: set your database password
@@ -69,7 +70,7 @@ After you install the dependencies and set the environment variables, you can st
 
 #### Request Task
 
-This API endpoint will need authorization before continue to create a request task.
+This API endpoint will create a requested task and need authorization before continuing to create a request task.
 
 ```http
   POST /api/tasks/request
@@ -85,6 +86,35 @@ This API endpoint will need authorization before continue to create a request ta
 | lat           | body    | `task_latitude`   |
 | lon           | body    | `task_longitude`  |
 
+Input example
+```
+curl --location 'https://serfee-project.as.r.appspot.com/tasks/request' \
+--header 'Authorization: ${token}' \
+--form 'photo=@"/D:/1a PRESUNIV/luf.png"' \
+--form 'title="buy me"' \
+--form 'category="Cleaning"' \
+--form 'description="help me buy some cofeee"' \
+--form 'lat="-6.216840066573826"' \
+--form 'lon="107.1517113558033"'
+```
+
+Output example
+
+```bash
+{
+    "message": "Create new task success",
+    "creator_id": 2,
+    "data": {
+        "title": "buy me",
+        "category": "Cleaning",
+        "description": "help me buy some cofeee",
+        "lat": "-6.216840066573826",
+        "lon": "107.1517113558033"
+    },
+    "image_url": "https://storage.googleapis.com/serfee/images/task/1686911412980"
+}
+```
+
 #### Get near task
 
 This API endpoint will need the authorization, latitude and longitude from user location to get all near tasks by user location. radius will filters the tasks in radius km.
@@ -99,6 +129,36 @@ This API endpoint will need the authorization, latitude and longitude from user 
 | lat           | body    | `user_latitude`   |
 | lon           | body    | `user_longitude`  |
 | radius        | body    | `int`             |
+
+
+Input example
+```
+curl --location 'https://serfee-project.as.r.appspot.com/tasks/request' \
+--header 'Authorization: ${token}' \
+--form 'photo=@"/D:/1a PRESUNIV/luf.png"' \
+--form 'title="buy me"' \
+--form 'category="Cleaning"' \
+--form 'description="help me buy some cofeee"' \
+--form 'lat="-6.216840066573826"' \
+--form 'lon="107.1517113558033"'
+```
+
+Output example
+
+```bash
+{
+    "message": "Create new task success",
+    "creator_id": 2,
+    "data": {
+        "title": "buy me",
+        "category": "Cleaning",
+        "description": "help me buy some cofeee",
+        "lat": "-6.216840066573826",
+        "lon": "107.1517113558033"
+    },
+    "image_url": "https://storage.googleapis.com/serfee/images/task/1686911412980"
+}
+```
 
 ## Deployment
 
