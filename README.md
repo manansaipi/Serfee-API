@@ -133,32 +133,39 @@ This API endpoint will need the authorization, latitude and longitude from user 
 
 Input example
 ```
-curl --location 'https://serfee-project.as.r.appspot.com/tasks/request' \
+curl --location --request GET 'http://192.168.1.6:8080/tasks/response' \
 --header 'Authorization: ${token}' \
---form 'photo=@"/D:/1a PRESUNIV/luf.png"' \
---form 'title="buy me"' \
---form 'category="Cleaning"' \
---form 'description="help me buy some cofeee"' \
---form 'lat="-6.216840066573826"' \
---form 'lon="107.1517113558033"'
+--data '{
+    "latitude": -6.21684,
+    "longitude": 107.152,
+    "radius": 1
+}'
 ```
 
 Output example
 
 ```bash
 {
-    "message": "Create new task success",
-    "creator_id": 2,
-    "data": {
-        "title": "buy me",
-        "category": "Cleaning",
-        "description": "help me buy some cofeee",
-        "lat": "-6.216840066573826",
-        "lon": "107.1517113558033"
-    },
-    "image_url": "https://storage.googleapis.com/serfee/images/task/1686911412980"
+  "message": "GET all near tasks",
+  "data": [
+    {
+      "request_id": 94,
+      "user_id": 2,
+      "title": "buy me",
+      "category_id": 1,
+      "description": "help me buy some cofeee",
+      "price": null,
+      "location_latitude": -6.2168402671813965,
+      "location_longitude": 107.1517105102539,
+      "image_url": "https://storage.googleapis.com/serfee/images/task/1686911412980",
+      "status": "Active",
+      "created_at": "2023-06-16T03:30:13.000Z"
+    }
+  ],
+  "distance": 32
 }
 ```
+the response will give the distance between the tasker and tasks position
 
 ## Deployment
 
