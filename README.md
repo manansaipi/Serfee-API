@@ -3,7 +3,7 @@
 This is a backend API for Serfee Application using Node.js and Express Deployed on App Engine. The API seamlessly integrates with Google Cloud Platform (GCP) services, including Cloud SQL and Cloud Storage.
 You can access the API Endpoint link at https://serfee-project.as.r.appspot.com
 
-## Installation & Environment Variables
+## Installation & Environment Variables🚀
 
 > **_All operation methods require this step._**
 
@@ -192,7 +192,7 @@ This app utilizes CI/CD pipelines using GitHub Actions to automate deployment to
 
 [API Documentation](https://documenter.getpostman.com/view/27408376/2s93m32iF1)
 
-## Authors
+## Authors 👥
 
 - [@manansaipi](https://www.github.com/manansaipi)
 - [@siburianbasrunki](https://www.github.com/siburianbasrunki)
