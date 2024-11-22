@@ -7,7 +7,7 @@ You can access the API Endpoint link at https://serfee-project.as.r.appspot.com
 
 > **_All operation methods require this step._**
 
-To run this project, you will need to install the dependencies, create the configuration file called cloud-storage.json & firebase.json and add the following environment variables to your .env file
+To run this project, you will need to install the dependencies, create the configuration file called `cloud-storage.json` & `firebase.json` and add the following environment variables to your `.env` file
 
 #### Install dependencies
 
@@ -33,9 +33,10 @@ To run this project, you will need to install the dependencies, create the confi
 }
 ```
 
-you need to create cloud-storage.json & firebase.json inside the credentials folder. to get the credentials you need to set up the Firebase and GCP project and create the credentials key.
+you need to create `cloud-storage.json` & `firebase.json` inside the credentials folder. to get the credentials you need to set up the Firebase and GCP project and create the credentials key.
 
-#### .env
+#### `.env` File
+Create a `.env` file in the root directory of your project. This file will hold all the environment-specific configurations for the application.
 
 | Name          | Variable                                                                          |
 | :------------ | :-------------------------------------------------------------------------------- |
@@ -43,6 +44,32 @@ you need to create cloud-storage.json & firebase.json inside the credentials fol
 | MySQL         | `DB_HOST` `DB_USERNAME` `DB_PASSWORD` `DB_NAME`                                   |
 | Cloud Storage | `CS_PROJECT_ID` `CS_BUCKET_NAME`                                                  |
 | Firebase      | `FIREBASE_DB_URL` `FIREBASE_API_KEY` `FIREBASE_AUTH_DOMAIN` `FIREBASE_PROJECT_ID` |
+
+#### Example `.env` File
+
+You can use the following as a template for your `.env` file:
+
+```env
+PORT=xxxx
+
+# MySQL Database Configuration
+DB_HOST=xxxx
+DB_USERNAME=xxxx
+DB_PASSWORD=xxxx
+DB_NAME=xxxx
+
+# Cloud Storage Configuration
+CS_PROJECT_ID=xxxx
+CS_BUCKET_NAME=xxxx
+
+# Firebase Configuration
+FIREBASE_DB_URL=xxxx
+FIREBASE_API_KEY=xxxx
+FIREBASE_AUTH_DOMAIN=xxxx
+FIREBASE_PROJECT_ID=xxxx
+
+```
+**Note**: Replace the placeholder values (`xxxx`) with your actual configuration details. Make sure not to commit your `.env` file to version control to keep your credentials secure.
 
 - `PORT`: Set your server to listening to `PORT` you specify in here
 - `DB_HOST`: set your Database IP Address
@@ -56,7 +83,7 @@ you need to create cloud-storage.json & firebase.json inside the credentials fol
 - `FIREBASE_AUTH_DOMAIN`: set your Firebase Auth Domain got in Account Settings in Firebase Console
 - `FIREBASE_PROJECT_ID`: set your Firebase or GCP Project ID
 
-You can see the example of .env file in env.example file
+You can see the example of the `.env` file in the `env.example` file included in the root folder of the project.
 
 ## 🏃‍♂️ Run Local
 
